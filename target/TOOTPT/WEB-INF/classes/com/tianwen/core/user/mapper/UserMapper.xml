@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianwen.core.user.dao.UserMapper">
+	<resultMap id="UserMap" type="com.tianwen.core.user.entity.TMember" >
+	    <id column="mid" property="mid" jdbcType="BIGINT" />
+	    <result column="account" property="account" jdbcType="VARCHAR" />
+	    <result column="password" property="password" jdbcType="VARCHAR" />
+	    <result column="openid" property="openid" jdbcType="VARCHAR" />
+	    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+	    <result column="m_type" property="MType" jdbcType="BIGINT" />
+	    <result column="register_date" property="registerDate" jdbcType="VARCHAR" />
+	    <result column="last_login" property="lastLogin" jdbcType="VARCHAR" />
+	    <result column="name" property="name" jdbcType="VARCHAR" />
+	    <result column="unionid" property="unionid" jdbcType="VARCHAR" />
+	    <result column="status" property="status" jdbcType="BIGINT" />
+  	</resultMap>
+	
+	<select id="findMemberByActPwd" resultMap="UserMap">
+		SELECT ACCOUNT, PASSWORD, MID, OPENID, MOBILE, M_TYPE MType, REGISTER_DATE regiaterDate, LAST_LOGIN lastLogin, STATUS, NAME, UNIONID FROM T_MEMBER WHERE ACCOUNT = #{account, jdbcType=VARCHAR} AND PASSWORD = #{password, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updMemberByMid" parameterType="com.tianwen.core.user.entity.TMember">
+		UPDATE T_MEMBER
+		<set>
+			<if test="member.password != null">
+				PASSWORD = #{member.password, jdbcType=VARCHAR},
+			</if>
+			<if test="member.mobile != null">
+				MOBILE = #{member.mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="member.lastLogin != null">
+				LAST_LOGIN = #{member.lastLogin, jdbcType=VARCHAR},
+			</if>
+			<if test="member.name != null">
+				NAME = #{member.name, jdbcType=VARCHAR},
+			</if>
+			<if test="member.isSale != null">
+				IS_SALE = #{member.isSale, jdbcType=NUMERIC},
+			</if>
+		</set>
+		WHERE MID = #{member.mid, jdbcType=NUMERIC}
+	</update>
+
+
+	<insert id="addNewMember">
+		<selectKey keyProperty="mid" order="BEFORE" resultType="integer">
+			SELECT SEQ_BASE.NEXTVAL AS MID FROM DUAL
+		</selectKey>
+		INSERT INTO T_MEMBER (
+			mid,
+			account,
+			password,
+			mobile,
+			m_type,
+			register_date,
+			last_login,
+			status,
+			name
+		) VALUES (
+			#{mid},
+			#{member.account},
+			#{member.password},
+			#{member.mobile},
+			#{member.MType},
+			#{member.registerDate},
+			#{member.lastLogin},
+			1,
+			#{member.name}
+		)
+	</insert>
+
+</mapper>

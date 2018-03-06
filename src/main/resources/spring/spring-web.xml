@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+						   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+						   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <!-- 自动扫描controller包，实现支持注解的IOC -->
+    <context:component-scan base-package="com.tianwen.core.*.controller" />
+
+    <!-- Spring MVC不处理静态资源 -->
+    <!-- <mvc:default-servlet-handler /> -->
+
+    <!-- 支持mvc注解驱动 -->
+    <mvc:annotation-driven />
+    <mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	
+	<!-- 自动扫描 标签 -->
+	<context:component-scan base-package="com.tianwen.core.*.tag" />
+	<!-- <bean name="api" class="com.sojson.core.tags.APITemplateModel"></bean> -->
+	<bean name="springContextUtil" class="com.tianwen.common.util.spring.SpringContextUtil" scope="singleton"></bean>
+
+
+	<!-- 集成freemarker的mvc跳转配置 -->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 返回格式配置 -->
+	<bean id="mappingJacksonHttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<bean class="org.springframework.http.MediaType">
+					<constructor-arg index="0" value="text" />
+					<constructor-arg index="1" value="plain" />
+					<constructor-arg index="2" value="UTF-8" />
+				</bean>
+				<bean class="org.springframework.http.MediaType">
+					<constructor-arg index="0" value="*" />
+					<constructor-arg index="1" value="*" />
+					<constructor-arg index="2" value="UTF-8" />
+				</bean>
+				<bean class="org.springframework.http.MediaType">
+					<constructor-arg index="0" value="text" />
+					<constructor-arg index="1" value="*" />
+					<constructor-arg index="2" value="UTF-8" />
+				</bean>
+				<bean class="org.springframework.http.MediaType">
+					<constructor-arg index="0" value="application" />
+					<constructor-arg index="1" value="json" />
+					<constructor-arg index="2" value="UTF-8" />
+				</bean>
+			</list>
+		</property>
+		<!-- 
+		<property name="objectMapper">
+			<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+				//返回的json数据中是否存在以下配置的值 NON_NULL清楚所有null值 NON_DEFAULT清楚所有默认值  NON_EMPTY清楚所有空值
+				<property name="serializationInclusion">
+					<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">ALWAYS</value>
+					<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+					<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_DEFAULT</value>
+					<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_EMPTY</value>
+				</property>
+				//如果返回值有空值则进行自定义空值
+				<property name="serializerProvider">  
+	                <bean class="com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.Impl">  
+	                    <property name="nullValueSerializer">  
+	                        <bean class="cn.com.mx.gome.flash.component.GomeSearchJsonSerializer"></bean>  
+	                    </property>  
+	                </bean>  
+	            </property>  
+			</bean>
+		</property>
+		 -->
+	</bean>
+
+    
+	<!-- 配置freeMarker视图解析器 -->
+	<bean id="viewResolverFtl" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="viewClass" value="com.tianwen.common.freemarker.FreeMarkerViewExtend" />
+		<!-- 把Freemarker 扩展一下，把相关属性加入进去。。。 -->
+		<property name="contentType" value="text/html; charset=utf-8" />
+		<property name="cache" value="true" />
+		<property name="suffix" value=".ftl" />
+		<property name="order" value="0" />
+	</bean>
+	
+    <!-- 配置通用视图解析器 -->
+    <bean id="viewResolverCommon" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+        <property name="viewClass" value="org.springframework.web.servlet.view.InternalResourceView" />
+        <property name="order" value="2" />
+    </bean>
+	
+	<!-- 配置JSP视图解析器 -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/jsp/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="1" />
+	</bean>
+	
+	<!-- 配置freeMarker 拓展 -->
+	<bean id="freemarkerConfig" class="com.tianwen.common.freemarker.FreeMarkerConfigExtend">
+		<property name="templateLoaderPath">
+			<value>/WEB-INF/views/ftl/</value>
+		</property>
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape" value-ref="fmXmlEscape" />
+				<!-- <entry key="api" value-ref="api" /> -->
+			</map>
+		</property>
+		<property name="defaultEncoding">
+			<value>utf-8</value>
+		</property>
+		<property name="freemarkerSettings">
+			<props><!-- 315360000 -->
+				<prop key="template_update_delay">0</prop>
+				<prop key="defaultEncoding">UTF-8</prop>
+				<prop key="url_escaping_charset">UTF-8</prop>
+				<prop key="locale">zh_CN</prop>
+				<prop key="boolean_format">true,false</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="date_format">yyyy-MM-dd</prop>
+				<prop key="time_format">HH:mm:ss</prop>
+				<!-- <prop key="number_format">0.######</prop> -->
+				<prop key="number_format">#</prop>
+				<prop key="whitespace_stripping">true</prop>
+				<!-- 自动装载，引入Freemarker，用于Freemarker Macro引入 -->
+				<!-- 
+				<prop key="auto_import">
+					/common/config/top.ftl as _top,
+					/common/config/left.ftl as _left
+				</prop>
+				 -->
+			</props>
+		</property>
+	</bean>
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+	
+	<!-- 使用Annotation自动注册Bean,扫描@Controller和@ControllerAdvice-->
+	<context:component-scan base-package="com.tianwen.common.exception" use-default-filters="false">
+	    <!-- base-package 如果多个，用“,”分隔 -->
+	    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	    <!--控制器增强，使一个Contoller成为全局的异常处理类，类中用@ExceptionHandler方法注解的方法可以处理所有Controller发生的异常-->
+	    <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+	
+	
+    <import resource="classpath:/cache/shiro-cache.xml"/>
+
+</beans>

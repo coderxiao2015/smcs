@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- 自动扫描dao包，实现支持注解的IOC -->
+	<context:component-scan base-package="com.tianwen.core.*.dao" />
+
+	<!-- 读取数据库配置文件 -->
+	<util:properties id="propertiest" location="classpath:jdbc.properties" />
+
+	<!-- 数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="#{propertiest.driverClassName}" />
+		<property name="jdbcUrl" value="#{propertiest.url}" />
+		<property name="user" value="#{propertiest.username}" />
+		<property name="password" value="#{propertiest.password}" />
+		<property name="initialPoolSize" value="10"/>
+		<property name="maxStatements" value="0"/>
+		 <property name="minPoolSize" value="5" />  
+		<property name="maxPoolSize" value="200"/>
+		<property name="maxIdleTime" value="600"/>
+		<property name="unreturnedConnectionTimeout" value="300"/>
+		<property name="debugUnreturnedConnectionStackTraces" value="true"/>
+		<property name="automaticTestTable" value="c3p0_test"/>
+		<property name="idleConnectionTestPeriod" value="60"/>
+	</bean>
+	<!-- 事务管理器 -->
+	<bean id="tscMnger"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 通知 -->
+	<tx:advice id="tscAdvice" transaction-manager="tscMnger">
+		<tx:attributes>
+			<tx:method name="add*" propagation="NESTED" />
+			<tx:method name="del*" propagation="NESTED" />
+			<tx:method name="upd*" propagation="NESTED" />
+			<tx:method name="do*" propagation="NESTED" />
+			<tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 3.配置SqlSessionFactory对象 -->
+	<!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
+	<!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
+	<!-- 扫描entity包 使用别名 -->
+	<!-- 扫描sql配置文件:mapper需要的xml文件 -->
+	<!-- 
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="typeAliasesPackage" value="com.tianwen.core.*.entity" />
+		<property name="mapperLocations" value="classpath:mapper/*.xml" />
+	</bean>
+	 -->
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:com/tianwen/core/user/mapper/UserMapper.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 注入sqlSessionFactory -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSession" />
+		<!-- 给出需要扫描Dao接口包 -->
+		<property name="basePackage" value="com.tianwen.core.user.dao" />
+	</bean>
+
+</beans>
