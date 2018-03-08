@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tianwen.core.user.dao.UserMapper">
-	<resultMap id="UserMap" type="com.tianwen.core.user.entity.TMember" >
+<mapper namespace="com.tianwen.core.user.dao.UserDao">
+	<resultMap id="UserMap" type="member" >
 	    <id column="mid" property="mid" jdbcType="BIGINT" />
 	    <result column="account" property="account" jdbcType="VARCHAR" />
 	    <result column="password" property="password" jdbcType="VARCHAR" />
@@ -21,7 +21,16 @@
 		SELECT ACCOUNT, PASSWORD, MID, OPENID, MOBILE, M_TYPE MType, REGISTER_DATE regiaterDate, LAST_LOGIN lastLogin, STATUS, NAME, UNIONID FROM T_MEMBER WHERE ACCOUNT = #{account, jdbcType=VARCHAR} AND PASSWORD = #{password, jdbcType=VARCHAR}
 	</select>
 	
-	<update id="updMemberByMid" parameterType="com.tianwen.core.user.entity.TMember">
+	<select id="findMemberByMid" resultMap="UserMap" >
+		SELECT MOBILE, PASSWORD FROM T_MEMBER WHERE mid = #{mid, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据mid查询未付款订单数量 -->
+    <select id="countNoPayedOrder" resultType="java.lang.Integer">
+        select count(1) from s_order  where  is_valid = 0 and pay_status = 2  and mid = #{mid, jdbcType=INTEGER}
+    </select>
+	
+	<update id="updMemberByMid" parameterType="member">
 		UPDATE T_MEMBER
 		<set>
 			<if test="member.password != null">

@@ -13,5 +13,5 @@ public interface UserService {
 	void updMemberByMid(TMember member);
 	
 	HashMap<String, Object> getPerCenterInfo(TMember tMember);
-	
+	public TMember findMemberByMid(Integer mid );
 }

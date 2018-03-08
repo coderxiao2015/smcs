@@ -161,5 +161,16 @@
 	
 	
     <import resource="classpath:/cache/shiro-cache.xml"/>
+    
+    <mvc:interceptors>
+		<mvc:interceptor>		
+			<!-- 对//share/shareHome进行拦截 判断登录-->
+			<mvc:mapping path="/share/shareHome"/>
+			<!-- 特定请求的拦截器只能有一个 -->
+			<bean class="com.tianwen.common.interceptor.SessionCheckInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	
 
 </beans>

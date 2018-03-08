@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Wed Mar 07 14:46:24 CST 2018
+@default-central-https\://repo.maven.apache.org/maven2/.lastUpdated=1520405184405
+https\://repo.maven.apache.org/maven2/.error=Could not transfer artifact net.mingsoft\:shiro-freemarker-tags\:jar\:0.1 from/to central (https\://repo.maven.apache.org/maven2)\: The operation was cancelled.

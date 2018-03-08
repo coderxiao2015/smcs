@@ -62,7 +62,7 @@ public class OpenController {
 	@SystemLog(opType="123", opDescription="456", opModel="789")
 	public ModelAndView toUsercenter(){
 		String a = null;
-		if(StringUtils.isBlank(a)) throw new UserException("");
+		//if(StringUtils.isBlank(a)) throw new UserException("");
 		TMember tMember = new TMember();
 		tMember.setMid(60452);
 		HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember);

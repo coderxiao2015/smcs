@@ -13,11 +13,23 @@ public class HandleGlobalException {
 	
 	private JsonResponseResult result = JsonResponseResult.createFalied("");
 
-	@ExceptionHandler(Exception.class)
-	@ResponseBody
-	JsonResponseResult handleGlobalException(Exception e){
-		result.addData("未知异常!");
-		return result;
+//	@ExceptionHandler(Exception.class)
+//	@ResponseBody
+//	JsonResponseResult handleGlobalException(Exception e){
+//		System.out.println(e.getStackTrace());
+//		result.addData("未知异常!");
+//		return result;
+//	}
+	
+	/****************************************** 系统异常 ********************************************/
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+	ModelAndView IllegalArgumentException(IllegalArgumentException ie){
+		ModelAndView mView = new ModelAndView();
+		mView.addObject("套餐异常");
+		mView.addObject(ie.getStackTrace());
+		mView.setViewName("/error/user_error");
+		return mView;
 	}
 	
 	@ExceptionHandler(UserException.class)

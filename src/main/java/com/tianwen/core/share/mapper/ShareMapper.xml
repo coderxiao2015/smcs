@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianwen.core.share.dao.ShareDao">
+
+
+	<select id="getShareCount" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	select min(tm.mid) as mid, count(tmr.amount) as earnedMoney
+	from t_money_record tmr, t_member tm
+	where tmr.mid = tm.mid
+	and (tm.mid = #{mid, jdbcType=INTEGER} or tm.openid = #{openid, jdbcType=VARCHAR} or tm.mobile = #{mobile,jdbcType=VARCHAR})
+	and tmr.status = 3
+	group by tm.mid
+	</select>
+	
+	
+</mapper>

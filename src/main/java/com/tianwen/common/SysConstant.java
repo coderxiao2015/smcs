@@ -14,4 +14,5 @@ public class SysConstant {
 	public static final int BLACK_USER_STATUS = 0;
 	
 	public static final String SESSION_USERLOGINFO = "session_userlogininfo";
+	public static final String TW_ISMEMBER = "tw003"; // 是否登陆过
 }

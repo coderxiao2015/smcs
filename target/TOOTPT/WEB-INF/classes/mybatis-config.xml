@@ -17,4 +17,14 @@
 		<!-- 打印SQL语句到控制台 -->
 		<setting name="logImpl" value="STDOUT_LOGGING"/>
 	</settings>
+	
+	<typeAliases>
+		<typeAlias type="com.tianwen.core.user.entity.TMember" alias="member"/>
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="com/tianwen/base/mapper/BaseMapper.xml"/>
+		<mapper resource="com/tianwen/core/user/mapper/UserMapper.xml"/>
+		<mapper resource="com/tianwen/core/share/mapper/ShareMapper.xml"/>
+	</mappers>
 </configuration>

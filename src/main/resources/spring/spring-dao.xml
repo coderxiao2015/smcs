@@ -14,7 +14,8 @@
 	<!-- 自动扫描dao包，实现支持注解的IOC -->
 	<context:component-scan base-package="com.tianwen.core.*.dao" />
 	
-	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<aop:aspectj-autoproxy />
+	<context:annotation-config />
 	
 	<!-- 读取数据库配置文件 -->
 	<util:properties id="propertiest" location="classpath:jdbc.properties" />
@@ -58,6 +59,8 @@
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut" />
 	</aop:config>
 	
+	<bean id="systemLogAspect" class="com.tianwen.common.log.SystemLogAspect"></bean>
+	
 	
 	<!-- 3.配置SqlSessionFactory对象 -->
 	<!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
@@ -76,11 +79,11 @@
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
-		<property name="mapperLocations">
+		<!-- <property name="mapperLocations">
 			<list>
 				<value>classpath:com/tianwen/core/user/mapper/UserMapper.xml</value>
 			</list>
-		</property>
+		</property> -->
 	</bean>
 
 	<!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
@@ -88,7 +91,7 @@
 		<!-- 注入sqlSessionFactory -->
 		<property name="sqlSessionFactoryBeanName" value="sqlSession" />
 		<!-- 给出需要扫描Dao接口包 -->
-		<property name="basePackage" value="com.tianwen.core.user.dao" />
+		<property name="basePackage" value="com.tianwen.core.*.dao" />
 	</bean>
 
 </beans>

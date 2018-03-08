@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 	<!-- 自动扫描dao包，实现支持注解的IOC -->
 	<context:component-scan base-package="com.tianwen.core.*.dao" />
-
+	
+	<aop:aspectj-autoproxy />
+	<context:annotation-config />
+	
 	<!-- 读取数据库配置文件 -->
 	<util:properties id="propertiest" location="classpath:jdbc.properties" />
 
@@ -27,12 +37,12 @@
 		<property name="idleConnectionTestPeriod" value="60"/>
 	</bean>
 	<!-- 事务管理器 -->
-	<bean id="tscMnger"
+	<bean id="txMnger"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	<!-- 通知 -->
-	<tx:advice id="tscAdvice" transaction-manager="tscMnger">
+	<tx:advice id="txAdvice" transaction-manager="txMnger">
 		<tx:attributes>
 			<tx:method name="add*" propagation="NESTED" />
 			<tx:method name="del*" propagation="NESTED" />
@@ -41,7 +51,17 @@
 			<tx:method name="*" propagation="SUPPORTS" read-only="true"/>
 		</tx:attributes>
 	</tx:advice>
-
+	
+	<!-- 定义AOP -->
+	<aop:config>
+		<!-- AOP事务控制 -->
+		<aop:pointcut id="myPointcut" expression="execution(public * com.tianwen.core.*.service.impl.*Impl.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut" />
+	</aop:config>
+	
+	<bean id="systemLogAspect" class="com.tianwen.common.log.SystemLogAspect"></bean>
+	
+	
 	<!-- 3.配置SqlSessionFactory对象 -->
 	<!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
 	<!-- 配置MyBaties全局配置文件:mybatis-config.xml -->
@@ -59,11 +79,11 @@
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
-		<property name="mapperLocations">
+		<!-- <property name="mapperLocations">
 			<list>
 				<value>classpath:com/tianwen/core/user/mapper/UserMapper.xml</value>
 			</list>
-		</property>
+		</property> -->
 	</bean>
 
 	<!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
@@ -71,7 +91,7 @@
 		<!-- 注入sqlSessionFactory -->
 		<property name="sqlSessionFactoryBeanName" value="sqlSession" />
 		<!-- 给出需要扫描Dao接口包 -->
-		<property name="basePackage" value="com.tianwen.core.user.dao" />
+		<property name="basePackage" value="com.tianwen.core.*.dao" />
 	</bean>
 
 </beans>

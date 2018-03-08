@@ -25,6 +25,7 @@ public class TMember implements java.io.Serializable {
 	private String sex;
 	private String isSale;
 	private String unionid;
+
 	
 	
 	

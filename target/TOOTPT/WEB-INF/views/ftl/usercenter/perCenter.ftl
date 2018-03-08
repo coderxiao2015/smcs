@@ -16,7 +16,7 @@
 	<body>
 		<div class="mineTop clearfix"  onclick="window.location.href='login.html'">
 			<img src="/images/bigtouxiang.png" />
-			<p>点击登录${map.orderCount}</p>
+			<p>点击登录</p>
 		</div>
 		<div class="inform">
 			<ul class="informTop clearfix">

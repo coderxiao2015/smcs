@@ -10,6 +10,8 @@
 
 <input type="button" value="测试登录" onclick="loginTest()">
 <a href="/open/usercenter">测试个人中心</a>
+
+<a href="/share/shareHome?mid=63202">分享赚钱</a>
 </body>
 <script type="application/javascript">
     function loginTest(){

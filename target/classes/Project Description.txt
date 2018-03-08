@@ -20,5 +20,5 @@
 			6、缓存目前只是搭建完成，具体使用后面再添加
 			7、所有JSP页面都必须写在/WEB-INF/views/下
 			8、关于权限，不需要拦截的注册登录等URL都是/open/**开头 关于用户的需要登录的都是/user/**开头，后面有其他业务URL自行添加但必须在shiro_base_auth.ini中配置
-			
+			9、关于异常,需要自定义系统异常的在common.exception下自定义业务模块异常,然后在HandleGlobalException中配置,可配置返回json还是model
 //TODO

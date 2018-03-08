@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+						   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+						   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <!-- 自动扫描controller包，实现支持注解的IOC -->
     <context:component-scan base-package="com.tianwen.core.*.controller" />
@@ -148,7 +151,26 @@
 	</bean>
 	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
 	
-    
+	<!-- 使用Annotation自动注册Bean,扫描@Controller和@ControllerAdvice-->
+	<context:component-scan base-package="com.tianwen.common.exception" use-default-filters="false">
+	    <!-- base-package 如果多个，用“,”分隔 -->
+	    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	    <!--控制器增强，使一个Contoller成为全局的异常处理类，类中用@ExceptionHandler方法注解的方法可以处理所有Controller发生的异常-->
+	    <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+	
+	
     <import resource="classpath:/cache/shiro-cache.xml"/>
+    
+    <mvc:interceptors>
+		<mvc:interceptor>		
+			<!-- 对//share/shareHome进行拦截 判断登录-->
+			<mvc:mapping path="/share/shareHome"/>
+			<!-- 特定请求的拦截器只能有一个 -->
+			<bean class="com.tianwen.common.interceptor.SessionCheckInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	
 
 </beans>
