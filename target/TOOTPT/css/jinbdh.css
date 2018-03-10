@@ -1,0 +1,193 @@
+@charset "utf-8";
+body {
+	background: #f7f9fa;
+}
+
+.topimg {
+	width: 100%;
+}
+
+.yhq {
+	margin: 0 0.14rem;
+	padding-bottom: 0.18rem;
+	padding-top: 0.28rem;
+}
+
+.yhq li {
+	margin-bottom: 0.18rem;
+	background: url(../images/yhj.png) no-repeat center;
+	background-size: 100% 100%;
+	height: 2.456rem;
+	padding-top: 0.3rem;
+	padding-left: 0.4rem;
+	position: relative;
+}
+
+.yhq li .mon {
+	float: left;
+	border-right: 1px dashed #fff;
+	color: #fff;
+	margin-bottom: 0.47rem;
+	padding-right: 0.2rem;
+	min-width: 1.7rem;
+}
+
+.yhq li .mon .mono {
+	font-size: 0.18rem;
+	margin-left: 0.1rem;
+}
+
+.yhq li .mon .mono span {
+	font-size: 0.62rem;
+}
+
+.yhq li .mon .mont {
+	font-size: 0.228rem;
+}
+
+.yhq li .name {
+	padding-left: 2.1rem;
+	color: #fff;
+	font-size: 0.3rem;
+	margin-top: 0.4rem;
+}
+
+.yhq li .reclick {
+	position: absolute;
+	right: 0.379rem;
+	top: 0.351rem;
+	width: 0.379rem;
+	z-index: 9;
+}
+
+.yhq li .sti span {
+	background: #e8f8ff;
+	color: #3bb9ff;
+	width: 1.19rem;
+	height: 0.379rem;
+	border-radius: 10px;
+	text-align: center;
+	font-size: 0.228rem;
+	display: inline-block;
+	line-height: 0.385rem;
+}
+
+.yhq li .sti i {
+	float: right;
+	margin-right: 0.379rem;
+	color: #999;
+	font-size: 0.18rem;
+	margin-top: 0.05rem;
+}
+
+.int {
+	background: #fff;
+	padding: 0.28rem 0.228rem;
+}
+
+.int .intti {
+	font-size: 0.265rem;
+	color: #333;
+	margin-bottom: 0.25rem;
+}
+
+.int .intcon {
+	color: #666;
+	font-size: 0.228rem;
+	margin-bottom: 0.05rem;
+}
+
+.bot {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	max-width: 640px;
+	z-index: 9;
+	background: #fff;
+	height: 0.93rem;
+	padding-left: 0.228rem;
+	border-top: 1px solid #ccc;
+}
+
+.bot span {
+	display: inline-block;
+	line-height: 0.93rem;
+	color: #ff5252;
+	font-size: 0.3rem;
+}
+
+.bot span i {
+	color: #999;
+	font-size: 0.228rem;
+	margin-left: 0.1rem;
+}
+
+.bot a {
+	display: block;
+	float: right;
+	width: 2.275rem;
+	height: 0.93rem;
+	line-height: 0.93rem;
+	background: #3bb9ff;
+	color: #fff;
+	font-size: 0.3rem;
+	text-align: center;
+}
+
+.content {
+	padding-top: 0.265rem;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	max-width: 640px;
+	z-index: 99;
+	padding-left: 0;
+	padding-bottom: 0;
+}
+
+.tjjg ul.tjjgtab {
+	margin-bottom: 0;
+}
+
+.tjjg ul.tjjgtab li span {
+	width: 1.14rem;
+}
+
+.oldyhq {
+	margin: 0 0.14rem;
+	margin-top: 0.2rem;
+	display: none;
+}
+
+.oldyhq ul li {
+	background: url(../images/oldyhq.png);
+	background-size: 100% 100%;
+	height: 2.456rem;
+	padding-top: 0.3rem;
+	padding-left: 0.4rem;
+	margin-bottom: 0.18rem;
+}
+
+.oldyhq li .sti {
+	margin-top: 1.55rem;
+}
+
+.oldyhq li .sti span {
+	background: #f5f5f5;
+	color: #ccc;
+	width: 1.19rem;
+	height: 0.379rem;
+	border-radius: 10px;
+	text-align: center;
+	font-size: 0.228rem;
+	display: inline-block;
+	line-height: 0.385rem;
+}
+
+.oldyhq li .sti i {
+	float: right;
+	margin-right: 0.379rem;
+	color: #999;
+	font-size: 0.18rem;
+	margin-top: 0.05rem;
+}

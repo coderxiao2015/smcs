@@ -1,0 +1,32 @@
+@charset "utf-8";
+ul {
+	padding: 0.379rem;
+	padding-left: 0.228rem;
+}
+
+ul li {
+	margin-bottom: 0.569rem;
+}
+
+ul li p.ask {
+	color: #333;
+	font-size: 0.265rem;
+	margin-bottom: 0.2rem;
+}
+
+ul li p.asw {
+	color: #999;
+}
+
+ul li img {
+	width: 6.25rem;
+	margin-top: 0.379rem;
+	margin-left: 0.19rem;
+}
+
+.title {
+	text-align: center;
+	color: #333;
+	font-size: 0.3rem;
+	margin-top: 0.55rem;
+}
