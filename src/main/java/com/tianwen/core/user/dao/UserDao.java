@@ -1,5 +1,8 @@
 package com.tianwen.core.user.dao;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,5 +20,9 @@ public interface UserDao {
 	void updMemberByMid(@Param("member") TMember tMember);
 	
 	int countNoPayedOrder(TMember tMember);
+	
+	int countTMember(HashMap<String, Object> map);
+	
+	List<TMember> findTMemberByPage(HashMap<String, Object> map);
 	
 }

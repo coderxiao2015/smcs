@@ -29,6 +29,14 @@
     <select id="countNoPayedOrder" resultType="java.lang.Integer">
         select count(1) from s_order  where  is_valid = 0 and pay_status = 2  and mid = #{mid, jdbcType=INTEGER}
     </select>
+    
+    <select id="countTMember" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        select count(1) from t_member
+    </select>
+    
+    <select id="findTMemberByPage" resultType="member" parameterType="java.util.HashMap">
+    	select * from t_member order by mid desc
+    </select>
 	
 	<update id="updMemberByMid" parameterType="member">
 		UPDATE T_MEMBER

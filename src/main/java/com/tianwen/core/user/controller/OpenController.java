@@ -1,5 +1,7 @@
 package com.tianwen.core.user.controller;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tianwen.base.util.Pager;
 import com.tianwen.common.exception.ProductException;
 import com.tianwen.common.exception.UserException;
 import com.tianwen.common.log.SystemLog;
@@ -59,33 +63,35 @@ public class OpenController {
 	}
 
 	@GetMapping(value = "usercenter")
-	@SystemLog(opType="123", opDescription="456", opModel="789")
-	public ModelAndView toUsercenter(){
+	@SystemLog(opType = "123", opDescription = "456", opModel = "789")
+	public ModelAndView toUsercenter(@RequestParam(name = "pageNo", required = false, defaultValue = "1") String pageNo) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, IntrospectionException {
 		String a = null;
-		//if(StringUtils.isBlank(a)) throw new UserException("");
+		// if(StringUtils.isBlank(a)) throw new UserException("");
 		TMember tMember = new TMember();
 		tMember.setMid(60452);
-		HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember);
+		Pager pager = new Pager();
+		pager.setPageNo(pageNo);
+		HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember, pager);
 		return new ModelAndView("/usercenter/perCenter", "map", infoMap);
-		//throw new ProductException("用户错误");
-		//throw new UserException("");
+		// throw new ProductException("用户错误");
+		// throw new UserException("");
 	}
-	
-	@GetMapping(value = "jspusercenter")
-	public ModelAndView toJSPUsercenter(){
-		TMember tMember = new TMember();
-		tMember.setMid(60452);
-		HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember);
-		ModelAndView mView = new ModelAndView();
-		mView.addObject("map", infoMap);
-		mView.setViewName("/usercenter/jspPerCenter");
-		//return new ModelAndView("/usercenter/jspPerCenter", "map", infoMap);
-		return mView;
-	}
-	
-	@GetMapping(value="test/{abc}/jjj/{efg}")
+
+//	@GetMapping(value = "jspusercenter")
+//	public ModelAndView toJSPUsercenter() {
+//		TMember tMember = new TMember();
+//		tMember.setMid(60452);
+//		HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember);
+//		ModelAndView mView = new ModelAndView();
+//		mView.addObject("map", infoMap);
+//		mView.setViewName("/usercenter/jspPerCenter");
+//		// return new ModelAndView("/usercenter/jspPerCenter", "map", infoMap);
+//		return mView;
+//	}
+
+	@GetMapping(value = "test/{abc}/jjj/{efg}")
 	@ResponseBody
-	public JsonResponseResult test(@PathVariable("abc") String a, @PathVariable("efg") String b){
+	public JsonResponseResult test(@PathVariable("abc") String a, @PathVariable("efg") String b) {
 		System.out.println(a);
 		System.out.println(b);
 		JsonResponseResult result = JsonResponseResult.createSuccess();

@@ -9,8 +9,17 @@
 						   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <!-- 自动扫描controller包，实现支持注解的IOC -->
+    <context:component-scan base-package="com.tianwen.common" />
     <context:component-scan base-package="com.tianwen.core.*.controller" />
 
+	<!-- 子系统配置信息加载-->
+	<bean id="propsLoader" class="com.tianwen.base.util.PropsLoader">
+		<constructor-arg index="0">
+			<list>
+				<value>/com/tianwen/datacenter.properties</value>
+			</list>
+		</constructor-arg>
+	</bean>
     <!-- Spring MVC不处理静态资源 -->
     <!-- <mvc:default-servlet-handler /> -->
 
@@ -36,8 +45,7 @@
 	</bean>
 
 	<!-- 返回格式配置 -->
-	<bean id="mappingJacksonHttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 		<property name="supportedMediaTypes">
 			<list>
 				<bean class="org.springframework.http.MediaType">
@@ -97,12 +105,12 @@
 	</bean>
 	
     <!-- 配置通用视图解析器 -->
-    <bean id="viewResolverCommon" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<!--    <bean id="viewResolverCommon" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/" />
         <property name="suffix" value=".jsp" />
         <property name="viewClass" value="org.springframework.web.servlet.view.InternalResourceView" />
         <property name="order" value="2" />
-    </bean>
+    </bean>-->
 	
 	<!-- 配置JSP视图解析器 -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -165,7 +173,10 @@
     <mvc:interceptors>
 		<mvc:interceptor>		
 			<!-- 对//share/shareHome进行拦截 判断登录-->
-			<mvc:mapping path="/share/shareHome"/>
+			<mvc:mapping path="/share/shareHome" />
+			<mvc:mapping path="/share/doHandleShareLink"/>
+			<mvc:mapping path="/user/toCouponList" />			
+			<mvc:mapping path="/user/toCouponList"/>
 			<!-- 特定请求的拦截器只能有一个 -->
 			<bean class="com.tianwen.common.interceptor.SessionCheckInterceptor" />
 		</mvc:interceptor>

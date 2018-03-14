@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.tianwen.base.util.PropsLoader;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

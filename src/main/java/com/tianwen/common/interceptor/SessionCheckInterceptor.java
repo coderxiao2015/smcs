@@ -27,7 +27,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
 			return Boolean.TRUE;
 		}	
 		//String mid = AESUtil.decrypt(CookieUtil.getCookieValue(arg0, SysConstant.TW_ISMEMBER));
-		String mid="58131";
+		String mid="61353";
 		tMember =  userService.findMemberByMid(StringUtil.isBlank(mid) ? null : new Integer(mid));
 		tMember.setAccount(tMember.getMobile().toString());
 		TokenManager.login(tMember, Boolean.TRUE);

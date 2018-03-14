@@ -58,6 +58,7 @@ public class JedisShiroCache<K, V> implements Cache<K, V> {
 		byte[] byteKey = SerializeUtil.serialize(buildCacheKey(key));
 		byte[] byteValue = new byte[0];
 		try {
+		//	byteValue = jedisManager.getValueByKey(DB_INDEX, byteKey);
 			byteValue = jedisManager.getValueByKey(DB_INDEX, byteKey);
 		} catch (Exception e) {
 			logger.error("get value by cache throw exception" + e);

@@ -20,10 +20,14 @@
 	
 	<typeAliases>
 		<typeAlias type="com.tianwen.core.user.entity.TMember" alias="member"/>
+		<typeAlias type="com.tianwen.core.share.entity.ProductEntity" alias="sProduct"/>
 	</typeAliases>
 	
+	<plugins>
+		<plugin interceptor="com.tianwen.common.interceptor.PageInterceptor"/>
+	</plugins>
+	
 	<mappers>
-		<mapper resource="com/tianwen/base/mapper/BaseMapper.xml"/>
 		<mapper resource="com/tianwen/core/user/mapper/UserMapper.xml"/>
 		<mapper resource="com/tianwen/core/share/mapper/ShareMapper.xml"/>
 	</mappers>

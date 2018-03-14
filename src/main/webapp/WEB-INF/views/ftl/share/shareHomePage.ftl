@@ -48,11 +48,11 @@
 
 	<body>
 		<img src="${basePath}/images/fximg.jpg" style="width: 100%;height: 100%;" />
-		<a href="fxzqgl.html" class="gl"></a>
-		<a href="fxsp.html" class="fl"></a>
+		<a href="${basePath}/share/guide" class="gl"></a>
+		<a href="${basePath}/share/getProductInfo" class="fl"></a>
 		<a href="fxjl.html" class="xl">
-		 <#if map11??>
-			<span>s</span>
+		 <#if map??>
+			<span>已获 ￥${map.EARNEDMONEY?string("##0.00")}</span>
 		<#else>
 			<span>已获 ￥0</span>
 		</#if>

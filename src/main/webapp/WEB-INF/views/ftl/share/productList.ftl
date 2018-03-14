@@ -40,7 +40,7 @@
 
 <script id="productInfo" type="text/x-jsrender">
 			 <li class="clearfix">
-					<a style="overflow: hidden; display: block;" href="${basePath}/share/bindSaleMan?pid={{:pid}}">
+					<a style="overflow: hidden; display: block;" href="javascript:void(0)" onclick="bindSale('{{:pid}}')">
 					<img src="${ctxImg}/product/{{:csid}}/{{:img}}" onerror="this.src='${basePath}/images/default_img.png'" />
 						<p class="name">{{:productName}}
 							{{if sex == 1}}
@@ -100,6 +100,15 @@
             }
         }
     });
+
+    //   绑定分销员
+    function bindSale(pid){
+        var data={"pid":pid};
+        /*给pcpt发送请求，不用返回值，通过form表单的形式*/
+        postwith("${pcptUrl}/core/sale.saleApplicate.do",data);
+    }
+
+
 
 </script>
 </body>

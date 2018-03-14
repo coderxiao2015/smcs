@@ -16,16 +16,16 @@ public class UserController {
 		return new ModelAndView("user/info");
 	}
 	
-//	@GetMapping(value = "/addNewUser")
-//	public String addUser(TMember tMember){
-//		JsonResponseResult result = null;
-//		try {
-//			
-//			
-//			
-//		} catch (Exception e) {
-//			
-//		}
-//	}
+	
+	@GetMapping(value = "/toCouponList")
+	public ModelAndView toCouponList(){	
+		
+		
+		ModelAndView mView = new ModelAndView();
+		//mView.addObject("list", "");
+		mView.setViewName("/usercenter/couponList");
+		return mView;
+	}
+	
 	
 }

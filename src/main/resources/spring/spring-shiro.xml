@@ -19,14 +19,16 @@
     
     <!-- shiro 缓存实现，对ShiroCacheManager，采用redis的实现 -->
 	<bean id="jedisShiroCacheManager" class="com.tianwen.common.shiro.cache.impl.JedisShiroCacheManager">
-	    <property name="jedisManager" ref="jedisManager"/>
+	     <property name="redisTemplate" ref="redisTemplate"/>
+	     <property name="stringRedisTemplate" ref="stringRedisTemplate"/>
 	</bean>
-    
-    <!-- redis缓存配置 -->  
-    <bean id="jedisManager" class="com.tianwen.common.shiro.cache.JedisManager">
+
+    <!-- redis缓存配置 --> 
+   <!-- <bean id="jedisManager" class="com.tianwen.common.shiro.cache.JedisManager">
 	    <property name="jedisPool" ref="jedisPool"/>
-	</bean>
-    
+	</bean>--> 
+     
+     
     <!-- 安全框架缓存管理器 -->  
     <!-- <bean id="shiroCacheManager" class="com.tianwen.twmall.shiro.cache.ShiroCacheManager">  
         <property name="memcachedManager" ref="memcachedManager" />  

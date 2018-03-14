@@ -1,12 +1,14 @@
 package com.tianwen.core.share.service.impl;
 
 import com.tianwen.core.share.dao.ShareDao;
+import com.tianwen.core.share.entity.ProductEntity;
 import com.tianwen.core.share.service.ShareService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
@@ -19,5 +21,21 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public HashMap<String, Object> getShare(HashMap<String, Object> param) {
         return shareDao.getShareCount(param);
+    }
+
+    @Override
+    public ArrayList<ProductEntity> getAllProductByPage(HashMap<String, Object> param) {
+        return shareDao.getAllProductByPage(param);
+    }
+
+
+    @Override
+    public Integer getAllProductCount(HashMap<String, Object> param) {
+        return shareDao.getAllProductCount(param);
+    }
+
+    @Override
+    public ProductEntity getProductByPid(HashMap<String, Object> param) {
+        return null;
     }
 }
