@@ -19,16 +19,16 @@
 <div class="topser clearfix">
     <div class="sera">
         <img src="${basePath}/images/fxser.png" />
-        <input type="text" id="" value="" placeholder="快速查找你需要的商品" />
+        <input type="text" id="globalSearch" value="" placeholder="快速查找你需要的商品" />
     </div>
-    <span>搜索</span>
+    <span onclick="search()">搜索</span>
 </div>
 <div class="tcnav">
     <ul class="clearfix">
-        <li>销量<img src="${basePath}/images/downicon.png" /></li>
-        <li>价格<img src="${basePath}/images/downicon.png" /></li>
-        <li>佣金<img src="${basePath}/images/downicon.png" /></li>
-        <li>分类<img src="${basePath}/images/downicon.png" /></li>
+        <li>销量<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
+        <li>价格<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
+        <li>佣金<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
+        <li>分类<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
     </ul>
 </div>
 <div style="height: 1.7rem;"></div>
@@ -40,7 +40,11 @@
 
 <script id="productInfo" type="text/x-jsrender">
 			 <li class="clearfix">
-					<a style="overflow: hidden; display: block;" href="javascript:void(0)" onclick="bindSale('{{:pid}}')">
+			 {{if '${pids}'.indexOf(PID) == -1}}
+					<a style="overflow: hidden; display: block;" href="javascript:void(0)" onclick="bindSale('{{:pid}}','0')">
+			{{else}}
+					<a style="overflow: hidden; display: block;" href="javascript:void(0)" onclick="bindSale('{{:pid}}','1')">
+				{{/if}}
 					<img src="${ctxImg}/product/{{:csid}}/{{:img}}" onerror="this.src='${basePath}/images/default_img.png'" />
 						<p class="name">{{:productName}}
 							{{if sex == 1}}
@@ -71,15 +75,18 @@
 
     function loadMoreProduct(pageNo){
         var url = "/share/loadMoreByPage.do";
+        var globalSearch=$("#globalSearch").val();
         var data = {
-            "listOrder":listOrder,
-            "category":category,
-            "pageNo":pageNo
+            "pageNo":pageNo,
+            "globalSearch":globalSearch
         };
         $.getMyJSON(url, data, function(data){
             var list = data.data;
             arry =  arry.concat(list);
             var productHtml = productTemplate.render(arry);
+            if((globalSearch!="")&&(pageNo==1)){
+                arry.length=0;
+            }
             $("#productInfoDiv").html(productHtml);
         });
 
@@ -102,10 +109,24 @@
     });
 
     //   绑定分销员
-    function bindSale(pid){
-        var data={"pid":pid};
+    function bindSale(pid,isCard){
+            var data={"pid":pid,"isCard":isCard};
         /*给pcpt发送请求，不用返回值，通过form表单的形式*/
         postwith("${pcptUrl}/core/sale.saleApplicate.do",data);
+    }
+
+    //点击搜索开始查询数据
+    function search(){
+        var globalSearch=$("#globalSearch").val();
+        if(globalSearch!=null){
+            loadMoreProduct(1);
+        }
+
+    }
+
+    //点击搜索开始查询数据
+    function conditionQuary(e){
+
     }
 
 

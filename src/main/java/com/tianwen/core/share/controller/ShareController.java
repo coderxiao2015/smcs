@@ -9,6 +9,7 @@ import com.tianwen.common.redisutil.RedisUtil;
 import com.tianwen.common.shiro.token.TokenManager;
 import com.tianwen.common.util.*;
 import com.tianwen.core.share.entity.ProductEntity;
+import com.tianwen.core.share.entity.TRelationRecordEntity;
 import com.tianwen.core.share.service.ShareService;
 
 import com.tianwen.core.user.entity.TMember;
@@ -89,12 +90,17 @@ public class ShareController {
 
     /*获取商品信息*/
     @RequestMapping(value = "getProductInfo", method = RequestMethod.GET)
-    public ModelAndView getProductInfo() {
+    public ModelAndView getProductInfo(HttpServletRequest request,HttpServletResponse response) {
+        ModelAndView modelAndView=new ModelAndView();
         Pager pager=new Pager();
         HashMap<String, Object> param = new HashMap<>();
         Integer infoSum = shareService.getAllProductCount(param);
+        String pids=shareService.getPids();
         pager.setTotalRows(param, infoSum);
-        return new ModelAndView("/share/productList", "pager", pager);
+        modelAndView.setViewName("/share/productList");
+        modelAndView.addObject("pager",pager);
+        modelAndView.addObject("pids",pids);
+        return modelAndView;
     }
 
     /**
@@ -103,13 +109,19 @@ public class ShareController {
      */
     @PostMapping(value = "loadMoreByPage")
     @ResponseBody
-    public Pager loadMoreByPage(ProductEntity productEntity) {
+    public Pager loadMoreByPage(HttpServletRequest request,HttpServletResponse response) {
         Pager pager=new Pager();
-        HashMap<String,Object> parm= SysUtil.transBean2Map(productEntity);
-        pager.setPageNo(productEntity.getPageNo());
+        HashMap<String,Object> parm= new HashMap<>();
+        parm.put("globalSearch",request.getParameter("globalSearch"));
+        parm.put("categoryName",request.getParameter("categoryName"));
+
+        pager.setPageNo(request.getParameter("pageNo"));
+        Integer infoSum = shareService.getAllProductCount(parm);
+        pager.setTotalRows(parm,infoSum);
+        parm.put("pageNo",request.getParameter("pageNo"));
         ArrayList<ProductEntity> resut=shareService.getAllProductByPage(parm);
-            pager.addDataAll(resut);
-            pager.createSuccess();
+        pager.addDataAll(resut);
+        pager.createSuccess();
         return pager;
     }
 
@@ -146,6 +158,10 @@ public class ShareController {
         param.put("pid",pid);
         if(!StringUtil.isBlank(openid))
             param.put("openid",openid);
+        String isCard=request.getParameter("isCard");
+        String productUrl=null;
+        productUrl=createProdutcUrl(pid,isCard).toString();
+        param.put("productUrl",productUrl);
         modelAndView.addObject("map",param);
         return modelAndView;
     }
@@ -153,73 +169,63 @@ public class ShareController {
     /**
      *拼装套餐详情页的url地址，供分享接口调用
      */
-    private  StringBuilder createProdutcUrl(String pid){
+    private  StringBuilder createProdutcUrl(String pid,String isCard){
         StringBuilder productUrl=new StringBuilder(200);
         productUrl.append(SysConstant.PCPT);
         productUrl.append("/core/product.toProductDetail.do?");
         productUrl.append("cgVariable.pid="+pid);
-        productUrl.append("&isCard=1");
+        if(!StringUtil.isBlank(isCard)&&(isCard.equals("1"))){
+            productUrl.append("&isCard=1");
+        }
         return productUrl;
     }
-
 
     @RequestMapping("/doHandleShareLink")
     public void doHandleShareLink(HttpServletRequest request,HttpServletResponse response) throws Exception {
         TMember tMember=TokenManager.getToken();
         //分享者信息
         String parentOpenId=request.getParameter("parentOpenId");
-        String parentMid=request.getParameter("parenMid");
-        if(!StringUtil.isBlank(parentOpenId))
-        parentOpenId = AESUtil.encrypt(parentOpenId); //编码
-        parentMid = AESUtil.encrypt(parentMid);
+        String parentMid=request.getParameter("parentMid");
         logger.info("parentOpenId : " + parentOpenId + "  parentMid:" + parentMid);
 
         //分享附带信息
         String selfUrl = request.getParameter("selfUrl"); //当前url地址
         String pid=request.getParameter("pid");
-        String productUrl=String.valueOf(this.createProdutcUrl(pid));
+        String productUrl=request.getParameter("productUrl");
         logger.info("selfUrl : " + parentOpenId + "  productUrl:" + parentMid);
 
         //绑定者信息
         String openId=tMember.getOpenid();
         String mid=String.valueOf(tMember.getMid());
-        if(!StringUtil.isBlank(openId))
-        openId = AESUtil.encrypt(openId); //编码
-        mid = AESUtil.encrypt(mid);
         logger.info("openId : " + openId + "  mid:" + mid);
 
 
         //判断当前的打开的用户是本人还是其他人
-        if(parentMid.equals(mid))
+        if((parentMid!=null) && (parentMid.equals(mid)))
             response.sendRedirect(selfUrl);  //若是本人则重定向当前页面
 
-
-        //调用pcpt的方法绑定关系和打开页面
-        HashMap<String,Object> param=new HashMap<>();
-        param.put("parentOpenId",parentOpenId);
-        param.put("parentMid",parentMid);
-        param.put("selfUrl",selfUrl);
-        param.put("productUrl",productUrl);
-        param.put("openId",openId);
-        param.put("mid",mid);
-        param.put("isSale","1");
-
-        String doHandlerUrl=SysConstant.MARKER+"/core/share.bindingRelationship.do";
-        SysUtils.postHttpReq(doHandlerUrl,param);
-
+        TRelationRecordEntity relationRecordEntity=new TRelationRecordEntity();
+        if(!StringUtil.isBlank(mid))
+            relationRecordEntity.setMid(Integer.valueOf(mid));
+        if(!StringUtil.isBlank(parentMid))
+            relationRecordEntity.setParentMid(Integer.valueOf(parentMid));
+        relationRecordEntity.setOpenid(openId);
+        relationRecordEntity.setParentOpenid(parentOpenId);
+        relationRecordEntity.setShareUrl(productUrl);
+        //创建一个异步线程去绑定关系
+        shareService.doBindRelationship(relationRecordEntity);
         //跳转到套餐详情页面
         response.sendRedirect(productUrl);
 
-        }
+    }
 
 
 
 
-
- @RequestMapping("/testException")
+    @RequestMapping("/testException")
     public void testException(){
-     throw  new NullPointerException("空指针异常");
- }
+        throw  new NullPointerException("空指针异常");
+    }
 
 
 }

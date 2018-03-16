@@ -3,11 +3,14 @@ package com.tianwen.common.shiro.cache;
 import java.util.Collection;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
+import com.tianwen.common.log.LogUtils;
+import com.tianwen.common.redisutil.RedisUtil;
 import com.tianwen.common.util.SerializeUtil;
 
 /**
@@ -21,24 +24,32 @@ import com.tianwen.common.util.SerializeUtil;
 
 @SuppressWarnings("unchecked")
 public class JedisShiroCache<K, V> implements Cache<K, V> {
-	private static Log logger = LogFactory.getLog(JedisShiroCache.class);
 
-	/**
-	 * 为了不和其他的缓存混淆，采用追加前缀方式以作区分
-	 */
-	private static final String REDIS_SHIRO_CACHE = "tw:";
-	/**
-	 * Redis 分片(分区)，也可以在配置文件中配置
-	 */
-	private static final int DB_INDEX = 1;
+//	/**
+//	 * 为了不和其他的缓存混淆，采用追加前缀方式以作区分
+//	 */
+//	private static final String REDIS_SHIRO_CACHE = "tw:";
+//	/**
+//	 * Redis 分片(分区)，也可以在配置文件中配置
+//	 */
+//	private static final int DB_INDEX = 1;
 
-	private JedisManager jedisManager;
+//	private JedisManager jedisManager;
+	
+	private RedisTemplate<String, Object> redisTemplate;
 
 	private String name;
 
-	public JedisShiroCache(String name, JedisManager jedisManager) {
+	public RedisTemplate<String, Object> getRedisTemplate() {
+		return redisTemplate;
+	}
+
+	public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
+
+	public JedisShiroCache(String name) {
 		this.name = name;
-		this.jedisManager = jedisManager;
 	}
 
 	/**
@@ -55,33 +66,37 @@ public class JedisShiroCache<K, V> implements Cache<K, V> {
 	}
 
 	public V get(K key) throws CacheException {
-		byte[] byteKey = SerializeUtil.serialize(buildCacheKey(key));
-		byte[] byteValue = new byte[0];
+//		byte[] byteKey = SerializeUtil.serialize(buildCacheKey(key));
+//		byte[] byteValue = new byte[0];
+		Object object = new Object();
 		try {
 		//	byteValue = jedisManager.getValueByKey(DB_INDEX, byteKey);
-			byteValue = jedisManager.getValueByKey(DB_INDEX, byteKey);
+//			byteValue = jedisManager.getValueByKey(DB_INDEX, byteKey);
+			object = getRedisTemplate().opsForValue().get(key);
 		} catch (Exception e) {
-			logger.error("get value by cache throw exception" + e);
+			LogUtils.error(this.getClass(), "get value by cache throw exception" + e);
 		}
-		return (V) SerializeUtil.deserialize(byteValue);
+		return (V) object;
 	}
 
 	public V put(K key, V value) throws CacheException {
-		V previos = get(key);
+		//V previos = get(key);
 		try {
-			jedisManager.saveValueByKey(DB_INDEX, SerializeUtil.serialize(buildCacheKey(key)), SerializeUtil.serialize(value), -1);
+			//jedisManager.saveValueByKey(DB_INDEX, SerializeUtil.serialize(buildCacheKey(key)), SerializeUtil.serialize(value), -1);
+			getRedisTemplate().opsForValue().set((String) key, value);
 		} catch (Exception e) {
-			logger.error("put cache throw exception" + e);
+			LogUtils.error(this.getClass(), "put cache throw exception" + e);
 		}
-		return previos;
+		return value;
 	}
 
 	public V remove(K key) throws CacheException {
 		V previos = get(key);
 		try {
-			jedisManager.deleteByKey(DB_INDEX, SerializeUtil.serialize(buildCacheKey(key)));
+			//jedisManager.deleteByKey(DB_INDEX, SerializeUtil.serialize(buildCacheKey(key)));
+			getRedisTemplate().opsForValue().set((String) key, null);
 		} catch (Exception e) {
-			logger.error("remove cache  throw exception" + e);
+			LogUtils.error(this.getClass(), "remove cache  throw exception" + e);
 		}
 		return previos;
 	}
@@ -106,8 +121,8 @@ public class JedisShiroCache<K, V> implements Cache<K, V> {
 		return null;
 	}
 
-	private String buildCacheKey(Object key) {
-		return REDIS_SHIRO_CACHE + getName() + ":" + key;
-	}
+//	private String buildCacheKey(Object key) {
+//		return REDIS_SHIRO_CACHE + getName() + ":" + key;
+//	}
 
 }

@@ -5,13 +5,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
 import com.tianwen.common.SysConstant;
 public class FreeMarkerViewExtend extends FreeMarkerView {
-	private Log logger = LogFactory.getLog(this.getClass());
 	
 	protected void exposeHelpers(Map<String, Object> model, HttpServletRequest request){
 		
@@ -38,5 +35,6 @@ public class FreeMarkerViewExtend extends FreeMarkerView {
 		model.put("ctxImg", SysConstant.IMAGE_PATH);//图片目录
 		model.put("pcptUrl", SysConstant.PCPT);//pcpt
 		model.put("tooptUrl", SysConstant.TOOTHPT);//toothpt
+	//	System.out.println(model.get("tooptUrl"));
 	}
 }

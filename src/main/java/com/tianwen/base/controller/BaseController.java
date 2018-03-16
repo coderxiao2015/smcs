@@ -7,12 +7,22 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.tianwen.common.session.manager.SessionManager;
+
+@Controller
+@Scope("protopype")
 public class BaseController {
 
 	protected final static Log logger = LogFactory.getLog(BaseController.class);
+	
+	@Autowired
+	SessionManager sessionManager;
 	
 	public static String URL404 = "/error/404";
 

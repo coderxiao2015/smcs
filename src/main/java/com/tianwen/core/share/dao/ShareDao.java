@@ -1,10 +1,16 @@
 package com.tianwen.core.share.dao;
 
 import com.tianwen.core.share.entity.ProductEntity;
+import com.tianwen.core.share.entity.TRelationRecordEntity;
 import org.springframework.stereotype.Repository;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.springframework.stereotype.Repository;
+
+import com.tianwen.core.share.entity.ProductEntity;
 
 @Repository
 public interface ShareDao {
@@ -28,5 +34,13 @@ public interface ShareDao {
      * 获取商品信息
      */
     public ProductEntity getProductByPid(HashMap<String,Object> param);
+
+    public HashMap<String,Object> findMidByOpenId(TRelationRecordEntity relationRecordEntity);
+
+    public int addMember(HashMap<String,Object> param);
+
+    public void addRelationRecord(TRelationRecordEntity relationRecordEntity);
+
+    public String getTrianglePids();
 
 }

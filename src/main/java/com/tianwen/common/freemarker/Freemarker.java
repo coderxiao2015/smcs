@@ -10,11 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.tianwen.common.log.LogUtils;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -22,8 +20,6 @@ import freemarker.template.TemplateException;
 
 @Component
 public class Freemarker {
-	private Log logger = LogFactory.getLog(this.getClass());
-
 	private static Configuration config;
 	
 	static Map<String, Object> initMap;
@@ -81,7 +77,7 @@ public class Freemarker {
 				if(osw!=null)osw.close();
 				if(bw!=null) bw.close();
 			} catch (IOException e) {
-				logger.error("创建 ["+ outFile +"] . io close exception" + e.getMessage());
+				LogUtils.error(this.getClass(), "创建 ["+ outFile +"] . io close exception", e);
 			}
 		}
 		

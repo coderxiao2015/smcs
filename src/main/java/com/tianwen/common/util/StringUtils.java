@@ -12,8 +12,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.tianwen.common.log.LogUtils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -31,8 +30,6 @@ import net.sf.json.JSONObject;
  *
  */
 public class StringUtils extends org.apache.commons.lang.StringUtils{
-	
-	private static Log logger = LogFactory.getLog(StringUtils.class);
 	
 	/**
 	 * 一次性判断多个或单个对象为空。
@@ -281,7 +278,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 			value = java.net.URLEncoder.encode(value,"utf-8");
 			return value ;
 		} catch (UnsupportedEncodingException e) {
-			logger.error("字符串转换为URLCode失败,value:" + value,e);
+			LogUtils.error(StringUtils.class, "字符串转换为URLCode失败,value:" + value,e);
 			e.printStackTrace();
 			return null;
 		}    
@@ -296,7 +293,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 			value = java.net.URLDecoder.decode(value,"utf-8");
 			return value ;
 		} catch (UnsupportedEncodingException e) {
-			logger.error("URLCode转换为字符串失败;value:" + value,e);
+			LogUtils.error(StringUtils.class, "URLCode转换为字符串失败;value:" + value,e);
 			e.printStackTrace();
 			return null;
 		}  

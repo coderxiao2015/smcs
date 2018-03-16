@@ -30,15 +30,53 @@
 
 	<sql id="queryCondition" >
 			<if test="1==1">
-				and t.product_type <![CDATA[<>]]> 2 and tpcs.product_type=0 and t.status=2 and t.PSCOPE !=0 and tpcs.ratio > 0
+				and t.product_type <![CDATA[<>]]> 2
+				and tpcs.product_type=0
+				and t.status=2
+				and t.PSCOPE !=0
+				and tpcs.ratio > 0
 			</if>
+		/*搜索排序*/
+		<if test="globalSearch!=null">
+			<if test="sex!=null" >
+				and  t.sex =#{sex}
+			</if>
+			<if test="sex==null">
+				and  t.name like '%'||#{globalSearch}||'%'
+			</if>
+		</if>
+
 	</sql>
+
+<!--排序需要添加的条件-->
+<sql id="addQurey">
+	/*按销售的数量进行排序，将添加一个临时表*/
+		<if test="saleCountDesc!=null">
+			from (select min(sol.pid) as pid, count(1)
+			from s_order_line sol
+			group by sol.pid
+			order by count(1) desc) son
+			left join s_product t  on son.pid=t.pid
+		</if>
+	<if test="saleCountAsc!=null">
+		from (select min(sol.pid) as pid, count(1)
+		from s_order_line sol
+		group by sol.pid
+		order by count(1) asc) son
+		left join s_product t  on son.pid=t.pid
+	</if>
+	<if test="saleCountDesc==null and saleCountAsc==null">
+		FROM s_product t
+	</if>
+
+</sql>
+
 
 
 	<select id="getAllProductByPage" parameterType="java.util.HashMap" resultMap="sProductMap">
 		SELECT t.pid ,t.name as product_name,t.pno ,t.sex ,t.product_type,t.market_price ,t.shop_price ,t.discount ,t.pay_type ,t.status ,t.img,
 		f.name as brand_name ,trunc(tpcs.ratio*t.shop_price,1)  as ratio,f.csid
-		FROM s_product t
+		<include refid="addQurey"/>
 		LEFT JOIN (SELECT distinct spe.pid, tcs.name,spe.csid
 		FROM s_product_entity spe
 		LEFT JOIN t_car_services tcs
@@ -49,11 +87,26 @@
 		WHERE 1=1
 		<include refid="queryCondition" />
 
+		/*按照价格排序(排序的不用加到id=getAllProductCount)*/
+		<if test="salePriceDesc!=null">
+			order by t.shop_price desc
+		</if>
+		<if test="salePriceAsc!=null">
+			order by t.shop_price Asc
+		</if>
+
+		/*按照佣金排序*/
+		<if test="saleRatioDesc!=null">
+			order by ratio desc
+		</if>
+		<if test="saleRatioAsc!=null">
+			order by ratio asc
+		</if>
 	</select>
 
 	<select id="getAllProductCount" parameterType="java.util.HashMap" resultType="Integer">
 		SELECT count(1)
-		FROM s_product t
+		<include refid="addQurey" />
 		LEFT JOIN (SELECT distinct spe.pid, tcs.name
 		FROM s_product_entity spe
 		LEFT JOIN t_car_services tcs
@@ -65,6 +118,84 @@
 		<include refid="queryCondition" />
 
 	</select>
+
+	<!-- 获取三合一套餐的pid -->
+	<select id="getTrianglePids" resultType="java.lang.String">
+		select value from t_saleset where key =  'three_pids'
+	</select>
+
+	<!--这里做了两次判断：第一次判断当前用户是否存在。若不存在则做第二次判断；前两个if 和第三个if 为互斥条件-->
+	<select id="findMidByOpenId" parameterType="relationRecord" resultType="java.util.HashMap">
+			SELECT mid, levelone, leveltwo FROM t_member WHERE 1=1
+
+			<if test="openid!=null ">
+				and	openId = #{openid}
+			</if>
+			<if test="mid!=null">
+				or mid=#{mid}
+			</if>
+			<if test="parentMid!=null and openid==null and mid==null">
+			and mid=#{parentMid}
+			</if>
+		AND ROWNUM = 1
+	</select>
+
+	<insert id="addMember" parameterType="java.util.HashMap">
+		<selectKey resultType="int" keyProperty="mid">
+			SELECT SEQ_BASE.NEXTVAL AS mid FROM DUAL
+		</selectKey>
+		INSERT INTO t_member
+		(
+		mid,
+		openid,
+		levelone,
+		status,
+		<if test="leveltwo!=null">
+			leveltwo,
+		</if>
+		m_type,
+		register_date,
+		unionid
+		) VALUES
+		(
+		#{mid},
+		#{openid},
+		#{levelone},
+		1,
+			<if test="leveltwo!=null">
+			#{leveltwo},
+			</if>
+		#{type},
+		to_char(sysdate,'yyyy-MM-dd HH24:mi:ss'),
+		#{unionid}
+		)
+	</insert>
+
+
+	<!-- 保存绑定关系轨迹 -->
+	<insert id="addRelationRecord" parameterType="relationRecord">
+		INSERT INTO t_relation_record
+		(
+		id,
+		parentOpenid,
+		parentMid,
+		openid,
+		mid,
+		shareUrl,
+		type,
+		create_date
+		) VALUES
+		(
+		SEQ_POSTER.NEXTVAL,
+		#{parentOpenid},
+		#{parentMid},
+		#{openid},
+		#{mid},
+		#{shareUrl},
+		#{type},
+		to_char(sysdate,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
 
 
 

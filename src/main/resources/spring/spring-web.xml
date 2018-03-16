@@ -168,7 +168,7 @@
 	</context:component-scan>
 	
 	
-    <import resource="classpath:/cache/shiro-cache.xml"/>
+    <!-- <import resource="classpath:/spring/spring-redis.xml"/> -->
     
     <mvc:interceptors>
 		<mvc:interceptor>		

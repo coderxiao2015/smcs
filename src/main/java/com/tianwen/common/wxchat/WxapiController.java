@@ -32,7 +32,7 @@ public class WxapiController {
     @RequestMapping("/doValidJSSDK")
     @ResponseBody
     public JsonResponseResult doValidJSSDK(HttpServletRequest request) {
-       System.out.println("开始");
+           System.out.println("开始");
         JsonResponseResult result = null;
             String jsapi_ticket =WxapiController.getJsapiTicket();
             if(StringUtils.isEmpty(jsapi_ticket)){

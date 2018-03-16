@@ -21,6 +21,7 @@
 	<typeAliases>
 		<typeAlias type="com.tianwen.core.user.entity.TMember" alias="member"/>
 		<typeAlias type="com.tianwen.core.share.entity.ProductEntity" alias="sProduct"/>
+		<typeAlias type="com.tianwen.core.share.entity.TRelationRecordEntity" alias="relationRecord"/>
 	</typeAliases>
 	
 	<plugins>

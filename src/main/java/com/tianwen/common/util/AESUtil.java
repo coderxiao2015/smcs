@@ -1,6 +1,7 @@
 package com.tianwen.common.util;
 
 import java.security.MessageDigest;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 

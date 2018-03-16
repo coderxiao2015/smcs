@@ -8,7 +8,8 @@ public class TRelationRecordEntity implements java.io.Serializable {
 	private String parentOpenid;
 	
 	private int parentMid;
-	
+
+
 	private String openid;
 	
 	private int mid;

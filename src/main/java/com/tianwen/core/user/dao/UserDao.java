@@ -21,8 +21,12 @@ public interface UserDao {
 	
 	int countNoPayedOrder(TMember tMember);
 	
+	List<HashMap<String,Object>> findValidCouponByMid(Integer mid);
+	
+	List<HashMap<String,Object>> findInvalidCouponByMid(Integer mid);
+	
 	int countTMember(HashMap<String, Object> map);
 	
 	List<TMember> findTMemberByPage(HashMap<String, Object> map);
-	
+
 }

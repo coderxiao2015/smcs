@@ -7,17 +7,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.tianwen.common.shiro.cache.JedisManager;
+import com.tianwen.common.log.LogUtils;
 
 import net.sf.json.JSONObject;
 
 @SuppressWarnings("unchecked")
 public class SerializeUtil {
-	static final Class<?> CLAZZ = SerializeUtil.class;
-	private static Log logger = LogFactory.getLog(CLAZZ);
 
 	public static byte[] serialize(Object value) {
 		if (value == null) {
@@ -34,7 +29,7 @@ public class SerializeUtil {
 			bos.close();
 			rv = bos.toByteArray();
 		} catch (Exception e) {
-			logger.error("serialize error %s" + JSONObject.fromObject(value), e);
+			LogUtils.error(SerializeUtil.class, "serialize exception" + JSONObject.fromObject(value), e);
 		} finally {
 			close(os);
 			close(bos);
@@ -57,7 +52,7 @@ public class SerializeUtil {
 				rv = is.readObject();
 			}
 		} catch (Exception e) {
-			logger.error("serialize error %s" + in, e);
+			LogUtils.error(SerializeUtil.class, "serialize error" + in, e);
 		} finally {
 			close(is);
 			close(bis);
@@ -70,7 +65,7 @@ public class SerializeUtil {
 			try {
 				closeable.close();
 			} catch (IOException e) {
-				logger.error("close stream error", e);
+				LogUtils.error(SerializeUtil.class, "close stream error", e);
 			}
 	}
 

@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
-    <title>选择分享商品</title>
-    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-</head>
-<body>
-
-
+<div>${openid}</div>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script type="application/javascript">
     $(function(){
         var url = window.location.href;
         //ajax注入权限验证
-        var url2 = "${tooptUrl}/wxapi/doValidJSSDK.do";
+        var url2 = "/wxapi/doValidJSSDK.do";
         var data = {"url" : url};
         $.getMyJSON2(url2,data,function(data){
             var appId = data.data[0];
@@ -35,20 +24,17 @@
 
         wx.ready(function(){
             var productDetaliUrl="${productUrl}";
-            var isSale = '1';
-            var openid = "111";
-            var mid="11";
             var selfUrl = encodeURIComponent(window.location.href);
 
             var title = '分享';
             var imgUrl = $("#proImg").attr("src");
 
             //拼接分享的地址
-            var shareUrl="${pcptUrl}/share/doHandleShareLink";
+            var shareUrl="/share/doHandleShareLink";
             shareUrl+="?selfUrl="+selfUrl;
-            shareUrl+="&parentOpenId=${map.openid}";
+            shareUrl+="&parentOpenId=${openid}";
             shareUrl+="&parenMid=${map.mid}";
-            shareUrl+="&pid="+pid;
+            shareUrl+="&pid=${map.pid}";
             shareUrl+="&isSale=1";
 
             //分享给朋友
@@ -130,8 +116,4 @@
             });
         });
     });
-
-
 </script>
-</body>
-</html>

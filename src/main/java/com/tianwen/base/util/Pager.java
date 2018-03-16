@@ -52,6 +52,7 @@ public class Pager extends JsonResponseResult
         param.put("startRow", this.getStartRow());
         param.put("pageSize", this.getPageSize());
         param.put("endRow", this.getStartRow()+this.getPageSize());
+        param.put("totalPages",totalPages);
     }
     
     //可设置页面显示记录条数
@@ -69,6 +70,7 @@ public class Pager extends JsonResponseResult
         setCurrentPage(this.currentPage);
         param.put("startRow", this.getStartRow());
         param.put("pageSize", this.getPageSize());
+        param.put("totalPages",totalPages);
         param.put("endRow", this.getStartRow()+this.getPageSize());
     }
 

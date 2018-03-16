@@ -9,14 +9,54 @@ import java.util.HashMap;
 /*测试jedis*/
 public class TestJedis {
 
+
+
+
     @Test
-    public void testJedis(){
-        RedisUtil redisUtil=new RedisUtil();
-        HashMap<String,Object> aa=new HashMap<>();
-        aa.put("aa","11");
-        aa.put("aaa","22");
-        redisUtil.setMap(aa,"aa");
-        System.out.println(redisUtil.getMap("aa"));
-        System.out.println(redisUtil.getMap("aa"));
+    public void testFinal(){
+        final  int a;
+        a=3;
+        TestJedis testJedis=new TestJedis();
+        final Student student=new Student();
+        student.name="wang";
+        System.out.println(student.getName());
+        student.setName("zhansan");
+        System.out.println(student.getName());
+        student.setName("wang");
+        System.out.println(student.getName());
+
     }
+
+   final    class  Student{
+        String name ;
+        String sex;
+
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getSex() {
+            return sex;
+        }
+
+        public void setSex(String sex) {
+            this.sex = sex;
+        }
+    }
+
+    @Test
+    public void testME(){
+        String aa=(String)null;
+        System.out.println(aa);
+    }
+
+
+
+
+
 }

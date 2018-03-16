@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
-
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;

@@ -3,13 +3,10 @@ package com.tianwen.common.util;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-
-import org.apache.commons.beanutils.BeanMap;
 
 public class SysUtil {
 
