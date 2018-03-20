@@ -197,6 +197,23 @@
 		)
 	</insert>
 
+	<select id="findProductByPid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT t.pid ,t.name as product_name,t.pno ,t.sex ,t.product_type,t.market_price ,t.shop_price ,t.discount ,t.pay_type ,t.status ,t.img,
+    f.name as brand_name ,trunc(tpcs.ratio*t.shop_price,1)  as ratio,f.csid
+    from s_product t
+    LEFT JOIN (SELECT distinct spe.pid, tcs.name,spe.csid
+    FROM s_product_entity spe
+    LEFT JOIN t_car_services tcs
+    ON spe.csid = tcs.csid) f
+    ON t.pid = f.pid
+    LEFT JOIN t_product_commission_set tpcs
+    on tpcs.product_id = t.pid
+    WHERE 1=1
+    <if test="pid!=null">
+		and t.pid=#{pid}
+	</if>
+	</select>
+
 
 
 	

@@ -18,6 +18,11 @@
 			<img src="/images/bigtouxiang.png" />
 			<p>点击登录</p>
 		</div>
+		<#--
+		<#list map.pager.list as pages>
+			${pages.mid}
+		</#list>
+		-->
 		<div class="inform">
 			<ul class="informTop clearfix">
 				<li onclick="window.location.href='minetj.html'">

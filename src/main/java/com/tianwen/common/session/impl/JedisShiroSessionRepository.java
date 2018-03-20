@@ -94,7 +94,7 @@ public class JedisShiroSessionRepository implements ShiroSessionRepository {
 			//String key = new String(SerializeUtil.serialize(sessionId), "UTF-8");
 			//session = (Session) redisUtil.getObject(key);
 			//String key = new String(SerializeUtil.serialize(sessionId), "UTF-8");
-			String value = getRedisTemplate().opsForValue().get(fmtSessionKey(sessionId)).toString();
+				String value = getRedisTemplate().opsForValue().get(fmtSessionKey(sessionId)).toString();
 			session = deFmtSessionValue(value);
 			
 		} catch (Exception e) {

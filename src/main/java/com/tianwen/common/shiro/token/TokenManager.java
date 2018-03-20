@@ -23,7 +23,7 @@ public class TokenManager {
 	 * @return
 	 */
 	public static TMember login(TMember user,Boolean rememberMe){
-		ShiroToken token = new ShiroToken(user.getAccount(), user.getPassword());
+		ShiroToken token = new ShiroToken(user.getMobile());
 		token.setRememberMe(rememberMe);
 		SecurityUtils.getSubject().login(token);
 		return getToken();

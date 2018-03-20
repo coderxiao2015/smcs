@@ -43,4 +43,6 @@ public interface ShareDao {
 
     public String getTrianglePids();
 
+    public HashMap<String,Object> findProductByPid(HashMap<String,Object> param);
+
 }

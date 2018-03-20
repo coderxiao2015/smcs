@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="zxingorg:war">
+    <output-path>$PROJECT_DIR$/../zxing-master/zxingorg/target</output-path>
+    <root id="archive" name="zxingorg-3.3.3-SNAPSHOT.war">
+      <element id="artifact" artifact-name="zxingorg:war exploded" />
+    </root>
+  </artifact>
+</component>

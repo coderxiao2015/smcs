@@ -3,16 +3,218 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tianwen.core.share.dao.ShareDao">
-
+	<resultMap id="sProductMap" type="sProduct">
+		<id column="pid" property="Pid" jdbcType="INTEGER"/>
+		<result column="sex" property="sex" jdbcType="INTEGER"/>
+		<result column="product_name" property="productName" jdbcType="VARCHAR"/>
+		<result column="market_price" property="marketPrice" jdbcType="INTEGER"/>
+		<result column="shop_price" property="shopPrice" jdbcType="INTEGER"/>
+		<result column="discount" property="disCount" jdbcType="FLOAT"/>
+		<result column="pno" property="pno" jdbcType="VARCHAR"/>
+		<result column="img" property="img" jdbcType="VARCHAR"/>
+		<result column="brand_name" property="brandName" jdbcType="VARCHAR"/>
+		<result column="pay_type" property="payType" jdbcType="INTEGER"/>
+		<result column="product_type" property="productType" jdbcType="INTEGER"/>
+		<result column="ratio" property="ratio" jdbcType="FLOAT"/>
+		<result column="csid" property="csid" jdbcType="VARCHAR"/>
+	</resultMap>
 
 	<select id="getShareCount" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-	select min(tm.mid) as mid, count(tmr.amount) as earnedMoney
+	select min(tm.mid) as mid, sum(tmr.amount) as earnedMoney
 	from t_money_record tmr, t_member tm
 	where tmr.mid = tm.mid
 	and (tm.mid = #{mid, jdbcType=INTEGER} or tm.openid = #{openid, jdbcType=VARCHAR} or tm.mobile = #{mobile,jdbcType=VARCHAR})
-	and tmr.status = 3
+	and tmr.status = 1
 	group by tm.mid
 	</select>
-	
+
+	<sql id="queryCondition" >
+			<if test="1==1">
+				and t.product_type <![CDATA[<>]]> 2
+				and tpcs.product_type=0
+				and t.status=2
+				and t.PSCOPE !=0
+				and tpcs.ratio > 0
+			</if>
+		/*搜索排序*/
+		<if test="globalSearch!=null">
+			<if test="sex!=null" >
+				and  t.sex =#{sex}
+			</if>
+			<if test="sex==null">
+				and  t.name like '%'||#{globalSearch}||'%'
+			</if>
+		</if>
+
+	</sql>
+
+<!--排序需要添加的条件-->
+<sql id="addQurey">
+	/*按销售的数量进行排序，将添加一个临时表*/
+		<if test="saleCountDesc!=null">
+			from (select min(sol.pid) as pid, count(1)
+			from s_order_line sol
+			group by sol.pid
+			order by count(1) desc) son
+			left join s_product t  on son.pid=t.pid
+		</if>
+	<if test="saleCountAsc!=null">
+		from (select min(sol.pid) as pid, count(1)
+		from s_order_line sol
+		group by sol.pid
+		order by count(1) asc) son
+		left join s_product t  on son.pid=t.pid
+	</if>
+	<if test="saleCountDesc==null and saleCountAsc==null">
+		FROM s_product t
+	</if>
+
+</sql>
+
+
+
+	<select id="getAllProductByPage" parameterType="java.util.HashMap" resultMap="sProductMap">
+		SELECT t.pid ,t.name as product_name,t.pno ,t.sex ,t.product_type,t.market_price ,t.shop_price ,t.discount ,t.pay_type ,t.status ,t.img,
+		f.name as brand_name ,trunc(tpcs.ratio*t.shop_price,1)  as ratio,f.csid
+		<include refid="addQurey"/>
+		LEFT JOIN (SELECT distinct spe.pid, tcs.name,spe.csid
+		FROM s_product_entity spe
+		LEFT JOIN t_car_services tcs
+		ON spe.csid = tcs.csid) f
+		ON t.pid = f.pid
+		LEFT JOIN t_product_commission_set tpcs
+		on tpcs.product_id = t.pid
+		WHERE 1=1
+		<include refid="queryCondition" />
+
+		/*按照价格排序(排序的不用加到id=getAllProductCount)*/
+		<if test="salePriceDesc!=null">
+			order by t.shop_price desc
+		</if>
+		<if test="salePriceAsc!=null">
+			order by t.shop_price Asc
+		</if>
+
+		/*按照佣金排序*/
+		<if test="saleRatioDesc!=null">
+			order by ratio desc
+		</if>
+		<if test="saleRatioAsc!=null">
+			order by ratio asc
+		</if>
+	</select>
+
+	<select id="getAllProductCount" parameterType="java.util.HashMap" resultType="Integer">
+		SELECT count(1)
+		<include refid="addQurey" />
+		LEFT JOIN (SELECT distinct spe.pid, tcs.name
+		FROM s_product_entity spe
+		LEFT JOIN t_car_services tcs
+		ON spe.csid = tcs.csid) f
+		ON t.pid = f.pid
+		LEFT JOIN t_product_commission_set tpcs
+		on tpcs.product_id = t.pid
+		WHERE 1=1
+		<include refid="queryCondition" />
+
+	</select>
+
+	<!-- 获取三合一套餐的pid -->
+	<select id="getTrianglePids" resultType="java.lang.String">
+		select value from t_saleset where key =  'three_pids'
+	</select>
+
+	<!--这里做了两次判断：第一次判断当前用户是否存在。若不存在则做第二次判断；前两个if 和第三个if 为互斥条件-->
+	<select id="findMidByOpenId" parameterType="relationRecord" resultType="java.util.HashMap">
+			SELECT mid, levelone, leveltwo FROM t_member WHERE 1=1
+
+			<if test="openid!=null ">
+				and	openId = #{openid}
+			</if>
+			<if test="mid!=null">
+				or mid=#{mid}
+			</if>
+			<if test="parentMid!=null and openid==null and mid==null">
+			and mid=#{parentMid}
+			</if>
+		AND ROWNUM = 1
+	</select>
+
+	<insert id="addMember" parameterType="java.util.HashMap">
+		<selectKey resultType="int" keyProperty="mid">
+			SELECT SEQ_BASE.NEXTVAL AS mid FROM DUAL
+		</selectKey>
+		INSERT INTO t_member
+		(
+		mid,
+		openid,
+		levelone,
+		status,
+		<if test="leveltwo!=null">
+			leveltwo,
+		</if>
+		m_type,
+		register_date,
+		unionid
+		) VALUES
+		(
+		#{mid},
+		#{openid},
+		#{levelone},
+		1,
+			<if test="leveltwo!=null">
+			#{leveltwo},
+			</if>
+		#{type},
+		to_char(sysdate,'yyyy-MM-dd HH24:mi:ss'),
+		#{unionid}
+		)
+	</insert>
+
+
+	<!-- 保存绑定关系轨迹 -->
+	<insert id="addRelationRecord" parameterType="relationRecord">
+		INSERT INTO t_relation_record
+		(
+		id,
+		parentOpenid,
+		parentMid,
+		openid,
+		mid,
+		shareUrl,
+		type,
+		create_date
+		) VALUES
+		(
+		SEQ_POSTER.NEXTVAL,
+		#{parentOpenid},
+		#{parentMid},
+		#{openid},
+		#{mid},
+		#{shareUrl},
+		#{type},
+		to_char(sysdate,'yyyy-MM-dd HH24:mi:ss')
+		)
+	</insert>
+
+	<select id="findProductByPid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT t.pid ,t.name as product_name,t.pno ,t.sex ,t.product_type,t.market_price ,t.shop_price ,t.discount ,t.pay_type ,t.status ,t.img,
+    f.name as brand_name ,trunc(tpcs.ratio*t.shop_price,1)  as ratio,f.csid
+    from s_product t
+    LEFT JOIN (SELECT distinct spe.pid, tcs.name,spe.csid
+    FROM s_product_entity spe
+    LEFT JOIN t_car_services tcs
+    ON spe.csid = tcs.csid) f
+    ON t.pid = f.pid
+    LEFT JOIN t_product_commission_set tpcs
+    on tpcs.product_id = t.pid
+    WHERE 1=1
+    <if test="pid!=null">
+		and t.pid=#{pid}
+	</if>
+	</select>
+
+
+
 	
 </mapper>

@@ -17,6 +17,8 @@ public interface UserDao {
 	
 	TMember findMemberByMid(@Param("mid") Integer mid);
 	
+	TMember findMemberByMobile(@Param("mobile") String mobile);
+	
 	void updMemberByMid(@Param("member") TMember tMember);
 	
 	int countNoPayedOrder(TMember tMember);

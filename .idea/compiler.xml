@@ -6,11 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="core" />
         <module name="TOOTHPT" />
+        <module name="zxing.appspot.com" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="android" target="1.5" />
+      <module name="android-core" target="1.5" />
+      <module name="android-integration" target="1.5" />
+      <module name="core" target="1.5" />
+      <module name="javase" target="1.5" />
       <module name="TOOTHPT" target="1.7" />
+      <module name="zxing-parent" target="1.5" />
+      <module name="zxing.appspot.com" target="1.5" />
+      <module name="zxingorg" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

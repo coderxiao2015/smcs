@@ -57,6 +57,13 @@ public class TestJedis {
 
 
 
+@Test
+    public void test2(){
+
+}
+
+
+
 
 
 }

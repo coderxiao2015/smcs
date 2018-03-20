@@ -87,6 +87,10 @@ public class ShareServiceImpl implements ShareService {
         return param;
      }
 
+    @Override
+    public HashMap<String, Object> findProductByPid(HashMap<String, Object> param) {
+        return shareDao.findProductByPid(param);
+    }
 
     @Override
     public Integer getAllProductCount(HashMap<String, Object> param) {

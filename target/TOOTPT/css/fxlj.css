@@ -1,0 +1,148 @@
+@charset "utf-8";
+body {
+	background: #f7f9fa;
+}
+
+.product {
+	background: #fff;
+}
+
+.serpro ul {
+	padding-left: 0.228rem;
+}
+
+.serpro ul li {
+	border-bottom: 1px solid #ededed;
+	padding: 0.28rem 0;
+	position: relative;
+}
+
+.serpro ul li img {
+	float: left;
+	width: 2.27rem;
+}
+
+.serpro ul li .name {
+	padding-left: 2.5rem;
+	color: #333;
+	font-size: 0.265rem;
+	margin-bottom: 0.08rem;
+}
+
+.serpro ul li .money {
+	padding-left: 2.45rem;
+	color: #333;
+	font-size: 0.3rem;
+	margin-bottom: 0.08rem;
+}
+
+.serpro ul li .smo {
+	padding-left: 2.5rem;
+	color: #ff5252;
+	font-size: 0.228rem;
+}
+
+.tcnav {
+	background: #fff;
+	height: 0.759rem;
+	line-height: 0.759rem;
+	margin-bottom: 0.18rem;
+}
+
+.tcnav ul li {
+	float: left;
+	width: 33.3%;
+	text-align: center;
+	color: #666;
+	font-size: 0.265rem;
+	height: 0.379rem;
+	line-height: 0.379rem;
+	border-right: 1px solid #ededed;
+	margin-top: 0.18rem;
+}
+
+.tcnav ul li:last-child {
+	border-right: 0;
+}
+
+.tcnav ul li.click {
+	color: #3bb9ff;
+}
+
+.tcnav ul li i {
+	color: #ff5252;
+	margin-right: 0.3rem;
+}
+
+.share {
+	background: #fff;
+	margin-bottom: 0.18rem;
+	padding-top: 0.379rem;
+	padding-left: 0.228rem;
+}
+
+.share .sname {
+	color: #ff5252;
+	font-size: 0.265rem;
+	margin-bottom: 0.1rem;
+}
+
+.share .scon {
+	color: #999;
+	font-size: 0.228rem;
+	padding-bottom: 0.35rem;
+	border-bottom: 1px solid #ededed;
+}
+
+.share .scon i {
+	color: #ff5252;
+}
+
+.share .sti {
+	color: #333;
+	padding-top: 0.35rem;
+	font-size: 0.265rem;
+	padding-bottom: 0.28rem;
+}
+
+.share ul {
+	margin-bottom: 0.569rem;
+}
+
+.share ul:last-child {
+	padding-bottom: 0.569rem;
+	margin-bottom: 0;
+}
+
+.share ul li {
+	float: left;
+	width: 25%;
+	text-align: center;
+}
+
+.share ul li img {
+	width: 0.957rem;
+	margin-bottom: 0.228rem;
+}
+
+.share ul li p {
+	color: #424242;
+	font-size: 0.265rem;
+	text-align: center;
+}
+
+.sharelist {
+	height: 0.85rem;
+	line-height: 0.85rem;
+	background: #fff;
+	padding-left: 0.228rem;
+	padding-right: 0.228rem;
+	color: #424242;
+	font-size: 0.265rem;
+}
+
+.sharelist img {
+	float: right;
+	width: 0.151rem;
+	margin-top: 0.28rem;
+}

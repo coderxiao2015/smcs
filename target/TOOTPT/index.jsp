@@ -12,6 +12,8 @@
 <a href="/open/usercenter">测试个人中心</a>
 
 <a href="/share/shareHome?mid=63202">分享赚钱</a>
+
+<a href="/user/toCouponList?mid=63202">优惠券</a>
 </body>
 <script type="application/javascript">
     function loginTest(){

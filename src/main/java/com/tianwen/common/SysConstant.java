@@ -23,13 +23,30 @@ public class SysConstant {
 	public static final String WEB_BROWSER = "web_browser";
 
 	/*pcpt项目*/
-	//public static  final  String PCPT="http://coder-xiao-1993.oicp.io:15843";
-	public static  final  String PCPT="http://localhost:8040";
+	public static  final  String PCPT="http://coder-xiao-1993.oicp.io:15843";
+	//public static  final  String PCPT="http://localhost:8040";
 	/*toothPt*/
-	//public static  final  String TOOTHPT="http://18eb075862.iask.in:25267";
-	public static  final  String TOOTHPT="http://localhost:8020";
+	public static  final  String TOOTHPT="http://18eb075862.iask.in:25267";
+	//public static  final  String TOOTHPT="http://localhost:8020";
 
 	//market
 	public static final  String MARKER="http://localhost:8030";
+
+	public static final String TW_PARENETOPENID = "tw002"; // 分享人的openId
+	public static final String TW_ISSALE = "twIssale"; // 是否是直销人员
+	public static final String TW_OPENID = "tw001"; // 自己的openId
+	public static final String TW_ISFANS = "isfans";
+	public static final String TW_UNIONID = "tw004"; //unionid
+
+
+	/**
+	 * Cookie生命周期
+	 */
+	public static final int COOKIE_LIFRCYCLE_DELETE = 0; // 立即删除
+	public static final int COOKIE_LIFRCYCLE_NOWADAY = -1; // 无生命周期
+	public static final int COOKIE_LIFRCYCLE_AWEEK = 60 * 60 * 24 * 7; // 一周
+	public static final int COOKIE_LIFRCYCLE_AMONTH = 60 * 60 * 24 * 30; // 30天
+	public static final int COOKIE_LIFRCYCLE_HOUR = 60 * 30; // 半小时
+	public static final int COOKIE_LIFRCYCLE_THREEDAY = 60 * 60 * 24 * 3; // 三天
 
 }

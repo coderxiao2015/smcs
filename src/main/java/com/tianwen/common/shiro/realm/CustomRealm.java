@@ -8,6 +8,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -29,17 +30,23 @@ public class CustomRealm extends AuthorizingRealm {
 		super();
 	}
 	
+	@Autowired //注入父类的属性，注入加密算法匹配密码时使用
+    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher){
+        super.setCredentialsMatcher(credentialsMatcher);
+    }
+	
 
 	/**
+	 * 
 	 * 认证回调函数，登录信息和用户验证信息验证
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
 		ShiroToken shiroToken = (ShiroToken) token;
-		TMember member = userService.doLogin(shiroToken.getUsername(), shiroToken.getPwd());
+		TMember member = userService.findMemberByMobile(shiroToken.getUsername());
 		if(SysUtil.isEmpty(member)){
-			throw new AccountException("帐号或密码不正确！");
+			throw new AccountException("此账号不存在！");
 		}else if(member.getStatus() == SysConstant.BLACK_USER_STATUS){
 			throw new DisabledAccountException("该账号已被拉入黑名单，请联系管理员！");
 		}else{

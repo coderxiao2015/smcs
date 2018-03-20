@@ -12,6 +12,8 @@ public interface UserService {
 	
 	TMember doLogin(String account, String password);
 	
+	TMember findMemberByMobile(String mobile);
+	
 	void updMemberByMid(TMember member);
 	
 	HashMap<String, Object> getPerCenterInfo(TMember tMember, Pager pager);

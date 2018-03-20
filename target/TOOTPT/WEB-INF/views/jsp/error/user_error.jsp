@@ -16,6 +16,8 @@
 	
 	<body>
 		用户错误!
+		${info}
+		${detail}
 	</body>
 
 	<script src="/js/rem.js" type="text/javascript" charset="utf-8"></script>

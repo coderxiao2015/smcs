@@ -28,7 +28,7 @@
 		<property name="password" value="#{propertiest.password}" />
 		<property name="initialPoolSize" value="10"/>
 		<property name="maxStatements" value="0"/>
-		 <property name="minPoolSize" value="5" />  
+		<property name="minPoolSize" value="5" />  
 		<property name="maxPoolSize" value="200"/>
 		<property name="maxIdleTime" value="600"/>
 		<property name="unreturnedConnectionTimeout" value="300"/>
@@ -59,7 +59,7 @@
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut" />
 	</aop:config>
 	
-	<bean id="systemLogAspect" class="com.tianwen.common.log.SystemLogAspect"></bean>
+	<!-- <bean id="systemLogAspect" class="com.tianwen.common.log.SystemLogAspect"></bean> -->
 	
 	
 	<!-- 3.配置SqlSessionFactory对象 -->

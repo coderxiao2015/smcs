@@ -62,4 +62,9 @@ public class UserServiceImpl implements UserService {
 		return userDao.findInvalidCouponByMid(mid);
 	}
 
+	@Override
+	public TMember findMemberByMobile(String mobile) {
+		return userDao.findMemberByMobile(mobile);
+	}
+
 }

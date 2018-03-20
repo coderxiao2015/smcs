@@ -5,13 +5,15 @@
 	<display-name>TOOTHPT</display-name>
 
 	<listener>
+		<display-name>contextConfigLocation</display-name>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:spring/spring-*.xml</param-value>
 	</context-param>
-	
+
+
 	<filter>
 		<description>shiro 权限拦截</description>
 		<filter-name>shiroFilter</filter-name>

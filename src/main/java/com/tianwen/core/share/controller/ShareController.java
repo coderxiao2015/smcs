@@ -156,12 +156,17 @@ public class ShareController {
         HashMap<String,Object> param=new HashMap<>();
         param.put("mid",mid);
         param.put("pid",pid);
+        param.put("isCard",request.getParameter("isCard"));
+        if(StringUtil.isBlank(mid) || StringUtil.isBlank(pid)){
+            throw  new NullPointerException();
+        }
         if(!StringUtil.isBlank(openid))
             param.put("openid",openid);
         String isCard=request.getParameter("isCard");
-        String productUrl=null;
-        productUrl=createProdutcUrl(pid,isCard).toString();
-        param.put("productUrl",productUrl);
+
+        //获取产品信息
+        HashMap<String,Object> result=shareService.findProductByPid(param);
+        modelAndView.addObject("resultMap",result);
         modelAndView.addObject("map",param);
         return modelAndView;
     }
@@ -183,49 +188,79 @@ public class ShareController {
     @RequestMapping("/doHandleShareLink")
     public void doHandleShareLink(HttpServletRequest request,HttpServletResponse response) throws Exception {
         TMember tMember=TokenManager.getToken();
+       // http://18eb075862.iask.in:25267/share/doHandleShareLink?
+        // selfUrl=http://18eb075862.iask.in:25267/share/shareDetail?mid=63202&pid=1669&isCard=0
+        // &parentOpenId=oV3cDv-MZ0QRZa2X75N9I_PEkfrs&parentMid=63202&pid=1669
+        // &productUrl=http://coder-xiao-1993.oicp.io:15843/core/product.toProductDetail.do?cgVariable.pid=1669&isSale=1
+
         //分享者信息
         String parentOpenId=request.getParameter("parentOpenId");
         String parentMid=request.getParameter("parentMid");
         logger.info("parentOpenId : " + parentOpenId + "  parentMid:" + parentMid);
-
-        //分享附带信息
-        String selfUrl = request.getParameter("selfUrl"); //当前url地址
         String pid=request.getParameter("pid");
-        String productUrl=request.getParameter("productUrl");
-        logger.info("selfUrl : " + parentOpenId + "  productUrl:" + parentMid);
-
+        String isCard=request.getParameter("isCard");
+        String isSale = request.getParameter("isSale");
         //绑定者信息
         String openId=tMember.getOpenid();
         String mid=String.valueOf(tMember.getMid());
         logger.info("openId : " + openId + "  mid:" + mid);
 
 
+        //分享附带信息
+        String selfUrl = SysConstant.TOOTHPT+"/share/shareDetail?mid="+mid+"&pid="+pid+"&isCard=0";
+
+        String productUrl=null;
+        productUrl=createProdutcUrl(pid,isCard).toString();
+        logger.info("selfUrl : " + parentOpenId + "  productUrl:" + parentMid);
         //判断当前的打开的用户是本人还是其他人
-        if((parentMid!=null) && (parentMid.equals(mid)))
+        if((parentMid!=null) && (parentMid.equals(mid))) {
             response.sendRedirect(selfUrl);  //若是本人则重定向当前页面
+        }else{
+            TRelationRecordEntity relationRecordEntity=new TRelationRecordEntity();
+            if(!StringUtil.isBlank(mid))
+                relationRecordEntity.setMid(Integer.valueOf(mid));
+            if(!StringUtil.isBlank(parentMid))
+                relationRecordEntity.setParentMid(Integer.valueOf(parentMid));
+            relationRecordEntity.setOpenid(openId);
+            relationRecordEntity.setParentOpenid(parentOpenId);
+            relationRecordEntity.setShareUrl(productUrl);
+            // 这表明是分享链接
+            if (!StringUtil.isBlank(parentOpenId) || !StringUtil.isBlank(parentMid)) {
 
-        TRelationRecordEntity relationRecordEntity=new TRelationRecordEntity();
-        if(!StringUtil.isBlank(mid))
-            relationRecordEntity.setMid(Integer.valueOf(mid));
-        if(!StringUtil.isBlank(parentMid))
-            relationRecordEntity.setParentMid(Integer.valueOf(parentMid));
-        relationRecordEntity.setOpenid(openId);
-        relationRecordEntity.setParentOpenid(parentOpenId);
-        relationRecordEntity.setShareUrl(productUrl);
-        //创建一个异步线程去绑定关系
-        shareService.doBindRelationship(relationRecordEntity);
-        //跳转到套餐详情页面
-        response.sendRedirect(productUrl);
+                logger.info("isSale : " + isSale);
+                // 0代表分享 1代表分销
+                if (StringUtil.isBlank(isSale)) isSale = "0";
 
+                if (isSale.equals("0")) {
+                    CookieUtil.addCookie(response, SysConstant.TW_PARENETOPENID, AESUtil.encrypt(parentMid), SysConstant.COOKIE_LIFRCYCLE_THREEDAY);
+                    CookieUtil.addCookie(response, SysConstant.TW_ISSALE, isSale, SysConstant.COOKIE_LIFRCYCLE_THREEDAY);
+                } else {
+                    CookieUtil.deleteCookie(request, response, SysConstant.TW_PARENETOPENID);
+                    CookieUtil.deleteCookie(request, response, SysConstant.TW_ISSALE);
+                    //创建一个异步线程去绑定关系
+                    shareService.doBindRelationship(relationRecordEntity);
+                }
+            }
+            //跳转到套餐详情页面
+            response.sendRedirect(productUrl);
+        }
+
+
+
+    }
+
+    /**
+     * 跳转到海报页面
+     */
+    @RequestMapping(value = "/goPost")
+    public ModelAndView modelAndView( ){
+        ModelAndView modelAndView=new ModelAndView("/share/post");
+
+        return modelAndView;
     }
 
 
 
-
-    @RequestMapping("/testException")
-    public void testException(){
-        throw  new NullPointerException("空指针异常");
-    }
 
 
 }

@@ -22,12 +22,24 @@
 	</select>
 	
 	<select id="findMemberByMid" resultMap="UserMap" >
-		SELECT MOBILE, PASSWORD FROM T_MEMBER WHERE mid = #{mid, jdbcType=INTEGER}
+		SELECT MOBILE,ACCOUNT, PASSWORD FROM T_MEMBER WHERE mid = #{mid, jdbcType=INTEGER}
+	</select>
+	
+	<select id="findMemberByMobile" resultMap="UserMap">
+		SELECT ACCOUNT, PASSWORD, MID, OPENID, MOBILE, M_TYPE MType, REGISTER_DATE regiaterDate, LAST_LOGIN lastLogin, STATUS, NAME, UNIONID FROM T_MEMBER WHERE MOBILE = #{mobile, jdbcType=VARCHAR}
 	</select>
 	
 	<!-- 根据mid查询未付款订单数量 -->
     <select id="countNoPayedOrder" resultType="java.lang.Integer">
         select count(1) from s_order  where  is_valid = 0 and pay_status = 2  and mid = #{mid, jdbcType=INTEGER}
+    </select>
+    
+    <select id="countTMember" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        select count(1) from t_member
+    </select>
+    
+    <select id="findTMemberByPage" resultType="member" parameterType="java.util.HashMap">
+    	select * from t_member order by mid desc
     </select>
 	
 	<update id="updMemberByMid" parameterType="member">
@@ -79,5 +91,30 @@
 			#{member.name}
 		)
 	</insert>
+	
+	<select id="findValidCouponByMid" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+		select a.coumemid,b.couponid, b.type, b.parvalue, b.minvalue, b.isexchange,
+		to_char(to_date(b.validdate,'yyyy/mm/dd hh24:mi:ss'),'yyyy/mm/dd') as validdate, 
+		b.rule, b.servkey, c.name 
+		from t_coumember_connectinfo a 
+		left join t_coupon_info b on a.couid = b.couponid  
+		left join t_servtype c on b.servkey = c.key
+		where c.stat = 1 and  to_char(sysdate,'yyyy-MM-dd HH24:mi:ss')  <![CDATA[<=]]> b.validdate
+		and  a.isuse = 0 and a.mid =  #{mid, jdbcType=INTEGER}
+	</select>
+	
+	
+	<select id="findInvalidCouponByMid" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+		select a.coumemid,b.couponid, b.type, b.parvalue, b.minvalue, b.isexchange,
+		to_char(to_date(b.validdate,'yyyy/mm/dd hh24:mi:ss'),'yyyy/mm/dd') as validdate, 
+		b.rule, b.servkey, c.name 
+		from t_coumember_connectinfo a 
+		left join t_coupon_info b on a.couid = b.couponid  
+		left join t_servtype c on b.servkey = c.key
+		where (c.stat = 0 or to_char(sysdate,'yyyy-MM-dd HH24:mi:ss')  <![CDATA[>=]]> b.validdate
+		or  a.isuse = 1) and a.mid =  #{mid, jdbcType=INTEGER}
+	</select>
+	
+	
 
 </mapper>

@@ -21,5 +21,7 @@ public interface ShareService {
 
     public String getPids();
 
+    public HashMap<String,Object> findProductByPid(HashMap<String,Object> param);
+
 
 }

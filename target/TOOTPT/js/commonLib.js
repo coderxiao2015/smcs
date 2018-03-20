@@ -154,6 +154,21 @@ var regs = new Array(
 		});
 	};
 
+    $.getMyJSON3 = function(url, data, callback) {
+        $.ajax({
+            "async" : false,
+            "url" : url,
+            "context" : this,
+            "data" : data,
+            "type" : "post",
+            "cache" : false,
+            "dataType" : "jsonp",
+            "success" : function(html) {
+                callback.call(this, html);
+            }
+        });
+    };
+
 	$(document).ready(
 			function() {
 				$(".code").bind("click", sendCode);

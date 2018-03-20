@@ -66,7 +66,7 @@
 		<property name="redisTemplate" ref="redisTemplate"/>
 		<!-- <property name="stringRedisTemplate" ref="stringRedisTemplate"/> -->
 	</bean>
-
+    
     <!-- redis缓存配置 --> 
    <!-- <bean id="jedisManager" class="com.tianwen.common.shiro.cache.JedisManager">
 	    <property name="jedisPool" ref="jedisPool"/>
@@ -85,7 +85,7 @@
     <!-- 安全管理器 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="cacheManager" ref="customShiroCacheManager" />
-		<!-- <property name="realm" ref="myRealm" /> -->
+		<property name="realm" ref="myRealm" />
 		<property name="sessionMode" value="native" />
 		<!--<property name="sessionManager" ref="sessionManager" />-->
 	</bean>
@@ -133,7 +133,15 @@
        </bean>
        
 	<!-- 配置进行授权和认证的 Realm -->  
-	<!-- <bean id="myRealm" class="com.tianwen.common.shiro.realm.CustomRealm"></bean> -->
+	<bean id="myRealm" class="com.tianwen.common.shiro.realm.CustomRealm"></bean>
+
+	<!-- 凭证匹配器 -->
+	<bean id="credentialsMatcher" class="com.tianwen.common.shiro.token.RetryLimitHashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="MD5" /><!--加密算法为md5-->
+        <property name="hashIterations" value="2" /><!--3次md5迭代-->
+         <!--是否存储散列后的密码为16进制，需要和生成密码时的一样，默认是base64-->
+        <property name="storedCredentialsHexEncoded" value="true" />
+    </bean>
 	
 	<!-- 配置 Bean 后置处理器: 会自动的调用和 Spring 整合后各个组件的生命周期方法. -->  
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>

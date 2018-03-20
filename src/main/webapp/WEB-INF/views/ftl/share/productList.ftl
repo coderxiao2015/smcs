@@ -10,6 +10,9 @@
     <link rel="stylesheet" type="text/css" href="${basePath}/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="${basePath}/css/base.css" />
     <link rel="stylesheet" type="text/css" href="${basePath}/css/fxsp.css" />
+    <style type="text/css">
+        .trans{transform: rotate(180deg);}
+    </style>
     <script src="${basePath}/js/rem.js" type="text/javascript" charset="utf-8"></script>
     <script src="${basePath}/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="${basePath}/js/commonLib.js" type="text/javascript" charset="utf-8"></script>
@@ -25,10 +28,10 @@
 </div>
 <div class="tcnav">
     <ul class="clearfix">
-        <li>销量<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
-        <li>价格<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
-        <li>佣金<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
-        <li>分类<img src="${basePath}/images/downicon.png" onclick="conditionQuary(this)"/></li>
+        <li onclick="conditionQuary(this)" class="saleCount">销量<img class="noTranse" src="${basePath}/images/downicon.png" /></li>
+        <li onclick="conditionQuary(this)" class="salePrice">价格<img  class="noTranse" src="${basePath}/images/downicon.png" /></li>
+        <li onclick="conditionQuary(this)" class="saleRatio">佣金<img class="noTranse" src="${basePath}/images/downicon.png" /></li>
+        <li onclick="conditionQuary(this)" class="order_four">分类<img class="noTranse" src="${basePath}/images/downicon.png" /></li>
     </ul>
 </div>
 <div style="height: 1.7rem;"></div>
@@ -67,8 +70,7 @@
 <script type="application/javascript">
     var productTemplate = $.templates('#productInfo');
     var arry =[],totalPage='${pager.totalPages}',i =1;
-    var listOrder="desc";//默认排序()降序
-    var category="All";//产品类型
+    var categoryName=null;
     $(function(){
          loadMoreProduct(1);//初始化第一页数据
     });
@@ -78,15 +80,21 @@
         var globalSearch=$("#globalSearch").val();
         var data = {
             "pageNo":pageNo,
-            "globalSearch":globalSearch
+            "globalSearch":globalSearch,
+            "categoryName":categoryName
         };
         $.getMyJSON(url, data, function(data){
             var list = data.data;
-            arry =  arry.concat(list);
-            var productHtml = productTemplate.render(arry);
-            if((globalSearch!="")&&(pageNo==1)){
+            totalPage=data.totalPages;
+            if(((globalSearch!=""))&&(pageNo==1)){
                 arry.length=0;
             }
+            if(((categoryName!=""))&&(pageNo==1)){
+                arry.length=0;
+            }
+            arry =  arry.concat(list);
+            var productHtml = productTemplate.render(arry);
+
             $("#productInfoDiv").html(productHtml);
         });
 
@@ -126,6 +134,21 @@
 
     //点击搜索开始查询数据
     function conditionQuary(e){
+        var imgObjet=$(e).children("img").attr("class");
+        var desc=imgObjet.indexOf("noTrans");
+        var asc=imgObjet.indexOf("trans");
+        //修改兄弟节点的样式
+        $(e).siblings().children("img").attr("class","noTrans");
+        if(desc>-1){
+            categoryName=$(e).attr("class")+"Asc";
+            $(e).children("img").attr("class","trans");
+        }
+        if(asc>-1){
+            categoryName=$(e).attr("class")+"Desc";
+            $(e).children("img").attr("class","noTrans");
+        }
+        globalSearch=null;
+        loadMoreProduct("1");
 
     }
 

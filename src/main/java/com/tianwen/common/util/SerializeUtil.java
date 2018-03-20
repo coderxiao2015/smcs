@@ -25,6 +25,7 @@ public class SerializeUtil {
 			bos = new ByteArrayOutputStream();
 			os = new ObjectOutputStream(bos);
 			os.writeObject(value);
+			os.flush();
 			os.close();
 			bos.close();
 			rv = bos.toByteArray();
