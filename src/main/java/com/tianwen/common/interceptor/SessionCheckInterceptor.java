@@ -25,11 +25,14 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
         TMember tMember = TokenManager.getToken();
 		if(!SysUtil.isEmpty(tMember)){
 			return Boolean.TRUE;
-		}	
+		}
 		//String mid = AESUtil.decrypt(CookieUtil.getCookieValue(arg0, SysConstant.TW_ISMEMBER));
 		String mid="63202";
-		tMember =  userService.findMemberByMid(StringUtil.isBlank(mid) ? null : new Integer(mid));
-		//tMember.setAccount(tMember.getMobile().toString());
+		if(StringUtil.isBlank(mid)){
+			//跳转到注册页面开始注册
+		}else{
+			tMember =  userService.findMemberByMid(StringUtil.isBlank(mid) ? null : new Integer(mid));
+		}
 		TokenManager.login(tMember, Boolean.TRUE);
 		
 		return Boolean.TRUE;

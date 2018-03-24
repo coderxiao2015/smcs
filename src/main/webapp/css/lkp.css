@@ -1,0 +1,104 @@
+@charset "utf-8";
+.lkp {
+	width: 100%;
+	height: 100%;
+}
+
+.tcbg {
+	background: url('/images/tcbg.jpg');
+	height: 100%;
+	text-align: center;
+	float: left;
+	width: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	-webkit-filter: blur(22px);
+	-moz-filter: blur(22px);
+	-o-filter: blur(22px);
+	-ms-filter: blur(22px);
+	filter: blur(22px);
+}
+
+.lkpcon {
+	position: relative;
+}
+
+.lphewm {
+	position: absolute;
+	top: 7.4rem;
+	left: 0.9rem;
+	z-index: 99;
+	width: 1.51rem;
+}
+
+.lph {
+	position: absolute;
+	top: 0.8rem;
+	width: 100%;
+	z-index: 9;
+	left: 0;
+}
+
+.lkps {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	max-width: 640px;
+	z-index: 9;
+	height: 0.93rem;
+	line-height: 0.93rem;
+	background: #fff;
+	text-align: center;
+}
+
+.lkps img {
+	width: 0.32rem;
+}
+
+.lkps span {
+	color: #3bb9ff;
+	font-size: 0.3rem;
+	margin-left: 0.08rem;
+	vertical-align: bottom;
+}
+
+.tcimg {
+	width: 5.4rem;
+	position: absolute;
+	top: 1.55rem;
+	left: 0.853rem;
+	z-index: 9;
+	border-radius: 10px;
+}
+
+.tctit {
+	position: absolute;
+	top: 5.1rem;
+	left: 1.37rem;
+	z-index: 9;
+	color: #333;
+	font-size: 0.34rem;
+}
+
+.tccue {
+	position: absolute;
+	top: 5.75rem;
+	left: 2.3rem;
+	z-index: 9;
+	color: #999;
+	font-size: 0.228rem;
+}
+
+.tctime {
+	position: absolute;
+	top: 6.3rem;
+	left: 1.48rem;
+	z-index: 9;
+	color: #999;
+	font-size: 0.228rem;
+}
+
+.tctime span {
+	color: #333;
+}

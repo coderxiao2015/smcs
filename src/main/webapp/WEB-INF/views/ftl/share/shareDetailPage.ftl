@@ -38,8 +38,6 @@
     <div class="serpro">
         <ul>
             <#if resultMap??>
-
-
             <li class="clearfix">
                 <img id="productImg"  src="${ctxImg}/product/${resultMap.CSID}/${resultMap.IMG}" onerror="this.src='${basePath}/images/default_img.png'" />
                 <p class="name">${resultMap.PRODUCT_NAME}</p>
@@ -62,7 +60,7 @@
     <p class="scon">在分享并产生购买后，您最多将获得<i>￥${resultMap.RATIO?string('0.00')}</i>的佣金</p>
     <p class="sti">分享到以下平台：</p>
     <ul class="clearfix">
-        <li onclick="window.location.href='lkp.html'">
+        <li onclick="getPost()">
             <img src="${basePath}/images/slkp.png" />
             <p>生成礼品函</p>
         </li>
@@ -164,6 +162,24 @@ $(document).ready(function(){
         alert("分享链接复制失败！请重新复制");
     });
 });
+
+/*生成礼品函*/
+function getPost(){
+    var pid="${map.pid}";
+    var parentMid="${map.mid}";
+    var isCard="${map.isCard}";
+    var parentOpenId="${map.openid}";
+    var isSale="1";
+    var postUrl="/share/getPostPage";
+    postUrl+="?pid="+pid;
+    postUrl+="&parentMid="+parentMid;
+    postUrl+="&isCard="+isCard;
+    postUrl+="&parentOpenId="+parentOpenId;
+    postUrl+="&isSale="+isSale;
+            //  var data={"pid":pid,"parentMid":parentMid,"isCard":isCard,"parentOpenId":parentOpenId,"isSale":isSale};
+    window.location.href=postUrl;
+    };
+
 
 document.onclick = function(e) {
         var className = e.target.className;

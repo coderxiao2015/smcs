@@ -188,10 +188,6 @@ public class ShareController {
     @RequestMapping("/doHandleShareLink")
     public void doHandleShareLink(HttpServletRequest request,HttpServletResponse response) throws Exception {
         TMember tMember=TokenManager.getToken();
-       // http://18eb075862.iask.in:25267/share/doHandleShareLink?
-        // selfUrl=http://18eb075862.iask.in:25267/share/shareDetail?mid=63202&pid=1669&isCard=0
-        // &parentOpenId=oV3cDv-MZ0QRZa2X75N9I_PEkfrs&parentMid=63202&pid=1669
-        // &productUrl=http://coder-xiao-1993.oicp.io:15843/core/product.toProductDetail.do?cgVariable.pid=1669&isSale=1
 
         //分享者信息
         String parentOpenId=request.getParameter("parentOpenId");
@@ -252,14 +248,34 @@ public class ShareController {
     /**
      * 跳转到海报页面
      */
-    @RequestMapping(value = "/goPost")
-    public ModelAndView modelAndView( ){
+    @RequestMapping(value = "/getPostPage")
+    public ModelAndView modelAndView(HttpServletRequest request,HttpServletResponse response ){
         ModelAndView modelAndView=new ModelAndView("/share/post");
 
+        TMember tMember=TokenManager.getToken();
+        String mid=request.getParameter("mid");
+        if(StringUtil.isBlank(mid))
+            mid=String.valueOf(tMember.getMid());
+        String openid=tMember.getOpenid();
+        String pid=request.getParameter("pid");
+        String isCard=request.getParameter("isCard");
+        HashMap<String,Object> param=new HashMap<>();
+        param.put("mid",mid);
+        param.put("pid",pid);
+        param.put("isCard",isCard);
+        if(StringUtil.isBlank(mid) || StringUtil.isBlank(pid)){
+            throw  new NullPointerException();
+        }
+        if(!StringUtil.isBlank(openid))
+            param.put("openid",openid);
+
+        HashMap<String,Object> result=shareService.findProductByPid(param);
+
+        modelAndView.addObject("resultMap",result);
+        modelAndView.addObject("map",param);
+        modelAndView.addObject("shareUser",tMember.getName());
         return modelAndView;
     }
-
-
 
 
 

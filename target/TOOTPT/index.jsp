@@ -2,6 +2,7 @@
 <html>
 <head>
     <script src="./js/jquery.min.js"></script>
+    <script src="${basePath}/js/jquery.min.js"></script>
 </head>
 <body>
 <a href="/open/login">用户登录</a>
@@ -14,6 +15,9 @@
 <a href="/share/shareHome?mid=63202">分享赚钱</a>
 
 <a href="/user/toCouponList?mid=63202">优惠券</a>
+
+<input type="button" value="记录佣金生成轨迹" onclick="testCom()">
+
 </body>
 <script type="application/javascript">
     function loginTest(){
@@ -31,7 +35,13 @@
               alert("登录失败！");
           }
       })
-    }
+    };
+
+
+function testCom(){
+    var marketUrl="http://192.168.1.110:8030/core/common.getProductCommission.do?pid=1979&ptype=0&oid=YY170801059250&openid=&mid=58139";
+   window.location.href=marketUrl;
+}
 </script>
 
 
