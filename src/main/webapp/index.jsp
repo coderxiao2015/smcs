@@ -16,6 +16,9 @@
 
 <a href="/user/toCouponList?mid=63202">优惠券</a>
 
+<a href="/share/testRedis">测试redis缓存</a>
+
+
 <input type="button" value="记录佣金生成轨迹" onclick="testCom()">
 
 </body>

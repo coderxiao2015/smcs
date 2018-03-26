@@ -2,7 +2,9 @@ package com.tianwen.core.user.controller;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tianwen.base.controller.BaseController;
 import com.tianwen.base.util.Pager;
 import com.tianwen.common.log.LogUtils;
 import com.tianwen.common.redisutil.RedisUtil;
@@ -30,6 +33,7 @@ import com.tianwen.common.session.CustomShiroSessionDAO;
 import com.tianwen.common.session.ShiroSessionRepository;
 import com.tianwen.common.shiro.token.TokenManager;
 import com.tianwen.common.util.JsonResponseResult;
+import com.tianwen.common.util.SerializeUtil;
 import com.tianwen.common.util.StringUtils;
 import com.tianwen.common.util.SysUtil;
 import com.tianwen.core.user.entity.TMember;
@@ -38,7 +42,7 @@ import com.tianwen.core.user.service.UserService;
 @Scope("prototype")
 @Controller
 @RequestMapping(value = "/open")
-public class OpenController {
+public class OpenController extends BaseController{
 	ShiroSessionRepository shiroSessionRepository;
 
 	CustomShiroSessionDAO customShiroSessionDAO;
@@ -79,18 +83,46 @@ public class OpenController {
 		// if(StringUtils.isBlank(a)) throw new UserException("");
 		Subject subject = SecurityUtils.getSubject();
 		Session session = subject.getSession();
-		session.setAttribute("abcdef", "123456");
-		customShiroSessionDAO.create(session);
+		//session.setAttribute("abcdef", "444444");
+		//customShiroSessionDAO.create(session);
 		
-		redisUtil.setString("Elysion", "789");
+//		redisUtil.setString("Elysion", "789dfsfsdfsdfs");
 		TMember tMember = new TMember();
 		tMember.setMid(60452);
-		Pager pager = new Pager();
-		pager.setPageNo(pageNo);
-		String key = redisUtil.getString("Elysion");
-		redisUtil.setObject("Elysion2", tMember);
-		HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember, pager);
-		return new ModelAndView("/usercenter/perCenter", "map", infoMap);
+//		Pager pager = new Pager();
+//		pager.setPageNo(pageNo);
+//		String key = redisUtil.getString("Elysion");
+//		redisUtil.setObject("Elysion2", tMember);
+//		//String aaa = session.getAttribute("abcdef").toString();
+//		redisUtil.delObject("Elysion2");
+//		TMember tMember2 = (TMember) redisUtil.getObject("Elysion2");
+//		
+//		HashMap<String, Object> map = new HashMap<>();
+//		map.put("123", "abc");
+//		map.put("456", "def");
+//		map.put("789", "ghi");
+//		redisUtil.setHash("000", map);
+//		
+//		List<Integer> list = new ArrayList<>();
+//		list.add(1);
+//		list.add(2);
+//		list.add(3);
+//		list.add(4);
+//		list.add(5);
+//		//redisUtil.setList("jgjgjg", list, 60000);
+//		
+//		List<Integer> list2 = (List<Integer>) redisUtil.getList("jgjgjg", 0, 4);
+//		
+//		HashMap<String, Object> map2 = (HashMap<String, Object>) redisUtil.getHash("000");
+//		String bba = (String) redisUtil.getHash("000", "456");
+		
+		//HashMap<String, Object> infoMap = userService.getPerCenterInfo(tMember, pager);
+//		return new ModelAndView("/usercenter/perCenter", "map", infoMap);
+		super.setSession("Ely", tMember);
+		
+		TMember tMember2 = (TMember) super.getSession("Ely");
+		
+		return new ModelAndView("/usercenter/perCenter");
 		// throw new ProductException("用户错误");
 		// throw new UserException("");
 	}

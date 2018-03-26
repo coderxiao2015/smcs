@@ -7,6 +7,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -24,7 +27,14 @@ public class BaseController {
 	@Autowired
 	SessionManager sessionManager;
 	
+	private Session session;
+	
 	public static String URL404 = "/error/404";
+	
+	public BaseController() {
+		Subject subject = SecurityUtils.getSubject();
+		session = subject.getSession();
+	}
 
 	public ModelAndView redirect(String redirectUrl, Map<String, Object>... parament) {
 		ModelAndView view = new ModelAndView(new RedirectView(redirectUrl));
@@ -40,5 +50,13 @@ public class BaseController {
 	
 	public static HttpSession getSession(HttpServletRequest request){
 		return request.getSession();
+	}
+	
+	public void setSession(String key, Object value){
+		session.setAttribute(key, value);
+	}
+	
+	public Object getSession(String key){
+		return session.getAttribute(key);
 	}
 }

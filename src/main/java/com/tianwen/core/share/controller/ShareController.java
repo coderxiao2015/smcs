@@ -277,6 +277,11 @@ public class ShareController {
         return modelAndView;
     }
 
-
+    //测试集群
+    @RequestMapping("/testRedis")
+    public void testRedis(){
+        redisUtil.setString("wangwu","123456");
+        System.out.println(redisUtil.getString("wangwu"));
+    }
 
 }

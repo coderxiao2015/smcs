@@ -1,5 +1,7 @@
 package com.tianwen.common.redisutil;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -8,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.google.gwt.dev.util.collect.HashMap;
+import com.tianwen.common.util.SerializeUtil;
 
 /*
  * 
@@ -24,6 +26,9 @@ public class RedisUtil {
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
+
+	@Autowired
+	private RwRedisTemplate<String,Object> rwRedisTemplate;
 	
 	
 	/*********************************************** Object ************************************************/
@@ -35,7 +40,7 @@ public class RedisUtil {
 	 */
 	public void setObject(String key, Object value){
 		if(StringUtils.isBlank(key) || value == null) throw new NullPointerException("redis set key or value is null");
-		redisTemplate.opsForValue().set(key, value);
+		redisTemplate.opsForValue().set(key, SerializeUtil.serialize(value));
 	}
 	
 	/**
@@ -47,7 +52,7 @@ public class RedisUtil {
 	public void setObject(String key, Object value, long expire){
 		if(expire <= 0) setObject(key, value);
 		if(StringUtils.isBlank(key) || value == null) throw new NullPointerException("redis set key or value is null");
-		redisTemplate.opsForValue().set(key, value, expire, TimeUnit.MILLISECONDS);
+		redisTemplate.opsForValue().set(key, SerializeUtil.serialize(value), expire, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
@@ -57,7 +62,7 @@ public class RedisUtil {
 	 */
 	public Object getObject(String key){
 		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
-		return redisTemplate.opsForValue().get(key);
+		return SerializeUtil.deserialize((byte[]) redisTemplate.opsForValue().get(key));
 	}
 	
 	/**
@@ -98,28 +103,12 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
+/*
+	@RedisSelector(selectorName = "slave")
+*/
 	public String getString(String key){
 		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
-		return (String) redisTemplate.opsForValue().get(key);
-	}
-	
-	/**
-	 * 获取字符串并截取 如果不指定start则全部取出来 如果不指定end则从start全部截取
-	 * @param key
-	 * @param start 开始位置
-	 * @param end 结束位置
-	 * @return
-	 */
-	public String getString(String key, long start, long end){
-		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
-		if(start < 0) getString(key);
-		String redisString = "";
-		if(end < 0){
-			redisString = redisTemplate.opsForValue().get(key, start, -1);
-		} else{
-			redisString = redisTemplate.opsForValue().get(key, start, end);
-		}
-		return redisString;
+		return (String) rwRedisTemplate.get(key,false);
 	}
 	
 	
@@ -215,4 +204,106 @@ public class RedisUtil {
 		return redisTemplate.opsForHash().hasKey(key, field);
 	}
 	
+	/*********************************************** List ************************************************/
+	
+	/**
+	 * 在数组最后添加元素
+	 * @param key
+	 * @param value
+	 */
+	public void setList(String key, Object value){
+		if(StringUtils.isBlank(key)) throw new NullPointerException("redis set key or field is null");
+		redisTemplate.opsForList().rightPush(key, value);
+	}
+	
+	/**
+	 * 在数组最后添加元素
+	 * @param key
+	 * @param value
+	 * @param expire 有效期 毫秒级
+	 */
+	public void setList(String key, Object value, long expire){
+		if(expire <= 0) setList(key, value); 
+		if(StringUtils.isBlank(key)) throw new NullPointerException("redis set key or field is null");
+		redisTemplate.opsForList().rightPush(key, value);
+		redisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
+	}
+	
+	/**
+	 * 新建一个list
+	 * @param key
+	 * @param list
+	 */
+	public void setList(String key, List<?> list){
+		if(StringUtils.isBlank(key)) throw new NullPointerException("redis set key or field is null");
+		redisTemplate.opsForList().rightPushAll(key, list);
+	}
+	
+	/**
+	 * 新建一个list
+	 * @param key
+	 * @param list
+	 * @param expire 有效期毫秒级
+	 */
+	public void setList(String key, List<?> list, long expire){
+		if(expire <= 0) setList(key, list); 
+		if(StringUtils.isBlank(key)) throw new NullPointerException("redis set key or field is null");
+		redisTemplate.opsForList().rightPushAll(key, list);
+		redisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
+	}
+	
+	/**
+	 * 根据下标得到数组元素
+	 * @param key
+	 * @param index
+	 * @return
+	 */
+	public Object getList(String key, long index){
+		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key or field is null");
+		return redisTemplate.opsForList().index(key, index);
+	}
+	
+	/**
+	 * 根据起始下标得到数组元素
+	 * @param key
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<?> getList(String key, long start, long end){
+		if(StringUtils.isBlank(key) || start < 0 || end < 0) throw new NullPointerException("redis get key or start < 0");
+		return redisTemplate.opsForList().range(key, start, end);
+	}
+	
+	/**
+	 * 得到数组长度
+	 * @param key
+	 * @return
+	 */
+	public long getListSize(String key){
+		return redisTemplate.opsForList().size(key);
+	}
+	
+	/**
+	 * 修改指定下标的元素
+	 * @param key
+	 * @param index
+	 * @param value
+	 * @return
+	 */
+	public boolean updList(String key, long index, Object value){
+		redisTemplate.opsForList().set(key, index, value);
+		return true;
+	}
+	
+	/**
+	 * 移除数组元素为value的count个元素
+	 * @param key
+	 * @param count
+	 * @param value
+	 * @return
+	 */
+	public long removeList(String key, long count, Object value){
+		return redisTemplate.opsForList().remove(key, count, value);
+	}
 }
