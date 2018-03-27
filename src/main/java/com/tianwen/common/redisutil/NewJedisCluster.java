@@ -1,5 +1,7 @@
 package com.tianwen.common.redisutil;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
@@ -7,6 +9,7 @@ import redis.clients.jedis.JedisClusterCommand;
 
 import java.util.Set;
 
+@Component
 public class NewJedisCluster extends JedisCluster {
 
     private QueryContextHolder contextHolder=new QueryContextHolder();
@@ -26,11 +29,12 @@ public class NewJedisCluster extends JedisCluster {
     /*根据上下文状态重载get方法 只读操作*/
     @Override
     public String get(final String key) {
-        return new JedisClusterCommand<String>(connectionHandler, maxRedirections) {
+        return (String) new NewJedisCommond<String>(connectionHandler, maxRedirections) {
             @Override
             public String execute(Jedis connection) {
-                if(contextHolder.getOp()==0){ //只读 切换connection连接器到slave节点
-                    //重点设置从节点只读属性，所有的操作都是为这个做辅助
+                System.out.println(connection);
+                if(contextHolder.getOp(0)==0){ //只读 切换connection连接器到slave节点
+                    System.out.println("开始只读");
                     connection.readonly();
                 }
                 return connection.get(key);

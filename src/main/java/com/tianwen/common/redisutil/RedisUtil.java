@@ -27,8 +27,8 @@ public class RedisUtil {
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 
-	@Autowired
-	private RwRedisTemplate<String,Object> rwRedisTemplate;
+/*	@Autowired
+	private RwRedisTemplate<String,Object> rwRedisTemplate;*/
 	
 	
 	/*********************************************** Object ************************************************/
@@ -103,12 +103,11 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-/*
+
 	@RedisSelector(selectorName = "slave")
-*/
 	public String getString(String key){
 		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
-		return (String) rwRedisTemplate.get(key,false);
+		return (String) redisTemplate.opsForValue().get(key);
 	}
 	
 	
