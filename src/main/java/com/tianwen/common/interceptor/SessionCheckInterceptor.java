@@ -26,8 +26,8 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
 		if(!SysUtil.isEmpty(tMember)){
 			return Boolean.TRUE;
 		}
-		String mid = AESUtil.decrypt(CookieUtil.getCookieValue(arg0, SysConstant.TW_ISMEMBER));
-		//String mid="63202";
+		//String mid = AESUtil.decrypt(CookieUtil.getCookieValue(arg0, SysConstant.TW_ISMEMBER));
+		String mid="63202";
 		if(StringUtil.isBlank(mid)){
 			//跳转到注册页面开始注册
 		}else{
