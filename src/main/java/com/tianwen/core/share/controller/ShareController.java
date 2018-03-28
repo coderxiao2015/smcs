@@ -5,6 +5,7 @@ import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
 import com.tianwen.base.util.Pager;
 import com.tianwen.base.util.PropsLoader;
 import com.tianwen.common.SysConstant;
+import com.tianwen.common.redisutil.RedisComponetUtil;
 import com.tianwen.common.redisutil.RedisUtil;
 import com.tianwen.common.shiro.token.TokenManager;
 import com.tianwen.common.util.*;
@@ -25,14 +26,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
 import sun.net.www.http.HttpClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Holder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.*;
 
 @Controller
 @Scope(value = "prototype")
@@ -49,6 +52,9 @@ public class ShareController {
 
     @Autowired
     private PropsLoader propsLoader;
+
+    @Autowired
+    private RedisComponetUtil redisComponetUtil;
 
 
 
@@ -280,8 +286,24 @@ public class ShareController {
     //测试集群
     @RequestMapping("/testRedis")
     public void testRedis(){
-        redisUtil.setString("wangwu","123456");
-        System.out.println(redisUtil.getString("wangwu"));
+       redisUtil.setString("zhangsan","张三");
+      System.out.println(redisUtil.getString("zhangsan"));
+      System.out.println(redisComponetUtil.get("zhangsan"));
+
+    }
+
+    @Test
+    public void test(){
+        Set<HostAndPort> hostAndPorts=new LinkedHashSet<>();
+        hostAndPorts.add(new HostAndPort("192.168.1.110",6379));
+        JedisCluster jedisCluster=new JedisCluster(hostAndPorts);
+        jedisCluster.set("wangwu","12346");
+        Jedis jedis=new Jedis("192.168.1.110",7004);
+       // Jedis jedis=new Jedis("192.168.1.110",7002);
+        //Jedis jedis=new Jedis("192.168.1.110",7002);
+        jedis.readonly();
+
+        System.out.println(jedis.get("wangwu"));
     }
 
 }

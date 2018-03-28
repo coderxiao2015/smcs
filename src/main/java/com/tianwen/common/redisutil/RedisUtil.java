@@ -81,7 +81,7 @@ public class RedisUtil {
 	 * @param key
 	 * @param value
 	 */
-	public void setString(String key, String value){
+	public void 	setString(String key, String value){
 		if(StringUtils.isBlank(key) || StringUtils.isBlank(value)) throw new NullPointerException("redis set key or value is null");
 		redisTemplate.opsForValue().set(key, value);
 	}
@@ -104,7 +104,6 @@ public class RedisUtil {
 	 * @return
 	 */
 
-	@RedisSelector(selectorName = "slave")
 	public String getString(String key){
 		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
 		return (String) redisTemplate.opsForValue().get(key);

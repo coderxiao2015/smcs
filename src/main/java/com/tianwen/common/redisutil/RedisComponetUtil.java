@@ -4,7 +4,12 @@ import com.tianwen.base.util.PropsLoader;
 import com.tianwen.common.util.StringUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.SerializationException;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.util.ClusterNodeInformation;
@@ -12,9 +17,12 @@ import redis.clients.util.JedisClusterCRC16;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class RedisComponetUtil {
@@ -33,7 +41,9 @@ public class RedisComponetUtil {
     private  List<ClusterNode> slaveNodes=new ArrayList<>();
 
     private HashMap<String,Object> slavePool=new HashMap<>();
-    
+
+
+
     /**
      * 初始化集群信息
      */
@@ -53,9 +63,11 @@ public void initClusterInfo(){
     convertNodes(jedis);
 }
 
+
+
    /*解析cluster nodes信息 转化为ClusterNode实例*/
    public void convertNodes(Jedis jedis){
-       w.lock();
+    //   w.lock();
        try {
            String localNodes = jedis.clusterNodes();
            for (String nodeInfo : localNodes.split("\n")) {
@@ -92,7 +104,7 @@ public void initClusterInfo(){
            /*主从节点映射*/
            matchMS();
        } finally {
-           w.unlock();
+        //   w.unlock();
        }
    }
 
@@ -120,30 +132,57 @@ public void initClusterInfo(){
 
    }
 
-
+/*公共方法*/
    public String  get(String keys){
        //通过被选中的jedis实例
-       Jedis jedis=null;
-       String data=null;
-        if(!StringUtil.isBlank(keys)){
-          int slot= JedisClusterCRC16.getSlot(keys);
-            if(slaveNodes!=null){
-                Iterator<ClusterNode> clusterNodeIterator=slaveNodes.iterator();
-                while (clusterNodeIterator.hasNext()){
-                    ClusterNode clusterNode=clusterNodeIterator.next();
-                    if((slot>=clusterNode.getStartSlot())&&(slot<=clusterNode.getEndSlot())){
-                        //被选中的jedis实例化
-                        jedis=new Jedis(clusterNode.getHost(),clusterNode.getPort());
-                        jedis.readonly();
-                        data=jedis.get(keys);
-                        break;
-                    }
-                }
-            }else{
-                throw new NullPointerException("查询"+keys+"从节点null");
-            }
-        }
-        return data;
+       Jedis jedis = null;
+       byte[] data = null;
+       String result=null;
+       try {
+           if (!StringUtil.isBlank(keys)) {
+               int slot = JedisClusterCRC16.getSlot(keys);
+               if (slaveNodes != null) {
+                   Iterator<ClusterNode> clusterNodeIterator = slaveNodes.iterator();
+                   while (clusterNodeIterator.hasNext()) {
+                       ClusterNode clusterNode = clusterNodeIterator.next();
+                       if ((slot >= clusterNode.getStartSlot()) && (slot <= clusterNode.getEndSlot())) {
+                           //被选中的jedis实例化
+                           jedis = new Jedis(clusterNode.getHost(), clusterNode.getPort());
+                           jedis.readonly();
+                         /*  ByteArrayOutputStream baos = new ByteArrayOutputStream(1204);
+                           ObjectOutputStream oos = new ObjectOutputStream(baos);
+                           oos.writeObject(keys);
+                           byte [] strData = baos.toByteArray();
+                           data = jedis.get(strData);
+                           System.out.println();
+                           if(data!=null){
+                               //反序列化
+                               ByteArrayInputStream bio = new ByteArrayInputStream(strData);
+                               ObjectInputStream ois = new ObjectInputStream(bio);
+                               result=(String)ois.readObject();
+                                   System.out.println(result);
+                           }
+                           */
+                         result=jedis.get(keys);
+                         if(result!=null){
+                            result=result.substring(result.indexOf("?? \u0005t \u0006"));
+                         }
+                           break;
+                       }
+                   }
+               } else {
+                   throw new NullPointerException("查询" + keys + "从节点null");
+               }
+
+           }
+       }catch (JedisException je){
+            je.printStackTrace();
+       } finally {
+           if(jedis!=null)jedis.close();
+       }
+        return result;
    }
+
+
 
 }
