@@ -1,16 +1,15 @@
 package com.tianwen.common.redisutil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
+import com.tianwen.common.util.SerializeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.tianwen.common.util.SerializeUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /*
  * 
@@ -27,9 +26,7 @@ public class RedisUtil {
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 
-	@Autowired
-	private RwRedisTemplate<String,Object> rwRedisTemplate;
-	
+
 	
 	/*********************************************** Object ************************************************/
 	
@@ -108,7 +105,7 @@ public class RedisUtil {
 */
 	public String getString(String key){
 		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
-		return (String) rwRedisTemplate.get(key,false);
+		return (String) redisTemplate.opsForValue().get(key);
 	}
 	
 	

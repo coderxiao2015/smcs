@@ -14,10 +14,8 @@ import org.springframework.stereotype.Component;
     Zset	字符串成员(member)与浮点数分值(score)之间的有序映射，元素的排列顺序由分值的大小决定	添加、获取、删除单个元素；根据分值范围(range)或者成员来获取元素
 
  */
-@Component
 public class StringRedisUtil {
 
-		      @Autowired
 		     private StringRedisTemplate  stringRedisTemplate;
 		     
 		     /**
