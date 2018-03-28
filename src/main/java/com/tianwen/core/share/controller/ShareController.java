@@ -286,7 +286,7 @@ public class ShareController {
     //测试集群
     @RequestMapping("/testRedis")
     public void testRedis(){
-       redisUtil.setString("zhangsan","张三");
+       redisUtil.setString("zhangsan","123");
       System.out.println(redisUtil.getString("zhangsan"));
       System.out.println(redisComponetUtil.get("zhangsan"));
 
@@ -294,16 +294,9 @@ public class ShareController {
 
     @Test
     public void test(){
-        Set<HostAndPort> hostAndPorts=new LinkedHashSet<>();
-        hostAndPorts.add(new HostAndPort("192.168.1.110",6379));
-        JedisCluster jedisCluster=new JedisCluster(hostAndPorts);
-        jedisCluster.set("wangwu","12346");
-        Jedis jedis=new Jedis("192.168.1.110",7004);
-       // Jedis jedis=new Jedis("192.168.1.110",7002);
-        //Jedis jedis=new Jedis("192.168.1.110",7002);
-        jedis.readonly();
-
-        System.out.println(jedis.get("wangwu"));
+        redisUtil.setString("zhangsan","123");
+        System.out.println(redisUtil.getString("zhangsan"));
+        System.out.println(redisComponetUtil.get("zhangsan"));
     }
 
 }

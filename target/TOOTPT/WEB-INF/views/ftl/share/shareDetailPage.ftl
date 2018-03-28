@@ -6,6 +6,7 @@
     <meta content="" name="keywords" />
     <meta content="" name="description" />
     <title>分享链接</title>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <link rel="shortcut icon" href="${basePath}/images/icon.ico" />
     <link rel="stylesheet" type="text/css" href="${basePath}/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="${basePath}/css/base.css" />
@@ -15,6 +16,115 @@
     <script src="${basePath}/js/commonLib.js" type="text/javascript" charset="utf-8"></script>
     <script src="${basePath}/js/rem.js" type="text/javascript" charset="utf-8"></script>
     <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+        define = null;
+        require = null;
+    </script>
+
+    <script type="application/javascript">
+            var url = window.location.href;
+            //ajax注入权限验证
+            var url2 = "${pcptUrl}/core/wxapi.doValidJSSDK.do";
+            $.getMyJSON2(url2,data,function(data){
+                console.info(data);
+                var appId = data.data[0];
+                var noncestr = data.data[1];
+                var jsapi_ticket = data.data[3];
+                var timestamp = data.data[2];
+                var signature = data.data[4];
+                wx.config({
+                    debug: true, //开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: appId, //必填，公众号的唯一标识
+                    timestamp: timestamp, // 必填，生成签名的时间戳
+                    nonceStr: noncestr, //必填，生成签名的随机串
+                    signature: signature,// 必填，签名，见附录1
+                    jsApiList: ['hideMenuItems','showMenuItems','closeWindow','onMenuShareAppMessage','onMenuShareTimeline','hideAllNonBaseMenuItem','showAllNonBaseMenuItem','chooseImage','uploadImage','downloadImage','onMenuShareQQ','onMenuShareQZone'] //必填，需要使用的JS接口列表，所有JS接口列表 见附录2
+                });
+            });
+
+            wx.ready(function(){
+                var title = '分享';
+                //分享给朋友
+                wx.onMenuShareAppMessage({
+                    title: title, // 分享标题
+                    desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
+                    link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: productPic, // 分享图标
+                    type: 'link', // 分享类型,music、video或link，不填默认为link
+                    trigger: function(){
+                        //点击分享触发的动作
+                    },
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        //alert(3)
+                    },
+                    cancel: function () {
+                        //alert(4)
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+
+                //分享到朋友圈
+                wx.onMenuShareTimeline({
+                    title: title, // 分享标题
+                    desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
+                    link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: productPic, // 分享图标
+                    type: 'link', // 分享类型,music、video或link，不填默认为link
+                    trigger: function(){
+                        //点击分享触发的动作
+                    },
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        //alert(3)
+                    },
+                    cancel: function () {
+                        //alert(4)
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+
+                //分享给qq
+                wx.onMenuShareQQ({
+                    title: title, // 分享标题
+                    desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
+                    link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: productPic, // 分享图标
+                    type: 'link', // 分享类型,music、video或link，不填默认为link
+                    trigger: function(){
+                        //点击分享触发的动作
+                    },
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        //alert(3)
+                    },
+                    cancel: function () {
+                        //alert(4)
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+
+                //分享给扣扣空间
+                wx.onMenuShareQZone({
+                    title: title, // 分享标题
+                    desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
+                    link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: productPic, // 分享图标
+                    type: 'link', // 分享类型,music、video或link，不填默认为link
+                    trigger: function(){
+                        //点击分享触发的动作
+                    },
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        //alert(3)
+                    },
+                    cancel: function () {
+                        //alert(4)
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+            });
+    </script>
     <style type="text/css">
         .mask1 {
             position: fixed;
@@ -104,15 +214,9 @@
 
 </body>
 <script type="application/javascript">
-/*    window.addEventListener("popstate", function(e) {
-        alert(1);
-        //返回上两页，因为做了中间页，当满足一定条件的时候才会到中间页面
-        window.history.go(-2);
-    }, false);*/
-
 /*分享的连接*/
 function shareLink(type){
-    var shareUrl="${tooptUrl}/share/doHandleShareLink";
+    var shareUrl="${pcptUrl}/core/share.doHandleShareLink.do";
     shareUrl+="?parentOpenId=${map.openid}";
     shareUrl+="&parentMid=${map.mid}";
     shareUrl+="&pid=${map.pid}";
@@ -121,6 +225,7 @@ function shareLink(type){
     if(type=='1'){
         return encodeURIComponent(shareUrl);
     }
+    console.info(shareUrl);
 return shareUrl;
 }
 
@@ -190,110 +295,5 @@ document.onclick = function(e) {
         }
     };
 </script>
-<#--<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-<script type="application/javascript">
-    $(function(){
-        var url = window.location.href;
-        //ajax注入权限验证
-        var url2 = "/wxapi/doValidJSSDK.do";
-        var data = {"url" : url};
-        $.getMyJSON2(url2,data,function(data){
-            var appId = data.data[0];
-            var noncestr = data.data[1];
-            var jsapi_ticket = data.data[3];
-            var timestamp = data.data[2];
-            var signature = data.data[4];
-            wx.config({
-                debug: true, //开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                appId: appId, //必填，公众号的唯一标识
-                timestamp: timestamp, // 必填，生成签名的时间戳
-                nonceStr: noncestr, //必填，生成签名的随机串
-                signature: signature,// 必填，签名，见附录1
-                jsApiList: ['hideMenuItems','showMenuItems','closeWindow','onMenuShareAppMessage','onMenuShareTimeline','hideAllNonBaseMenuItem','showAllNonBaseMenuItem','chooseImage','uploadImage','downloadImage','onMenuShareQQ','onMenuShareQZone'] //必填，需要使用的JS接口列表，所有JS接口列表 见附录2
-            });
-        });
 
-        wx.ready(function(){
-            var title = '分享';
-            //分享给朋友
-            wx.onMenuShareAppMessage({
-                title: title, // 分享标题
-                desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
-                link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: productPic, // 分享图标
-                type: 'link', // 分享类型,music、video或link，不填默认为link
-                trigger: function(){
-                    //点击分享触发的动作
-                },
-                success: function () {
-                    // 用户确认分享后执行的回调函数
-                    //alert(3)
-                },
-                cancel: function () {
-                    //alert(4)
-                    // 用户取消分享后执行的回调函数
-                }
-            });
-
-            //分享到朋友圈
-            wx.onMenuShareTimeline({
-                title: title, // 分享标题
-                desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
-                link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: productPic, // 分享图标
-                type: 'link', // 分享类型,music、video或link，不填默认为link
-                trigger: function(){
-                    //点击分享触发的动作
-                },
-                success: function () {
-                    // 用户确认分享后执行的回调函数
-                    //alert(3)
-                },
-                cancel: function () {
-                    //alert(4)
-                    // 用户取消分享后执行的回调函数
-                }
-            });
-
-            //分享给qq
-            wx.onMenuShareQQ({
-                title: title, // 分享标题
-                desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
-                link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: productPic, // 分享图标
-                type: 'link', // 分享类型,music、video或link，不填默认为link
-                trigger: function(){
-                    //点击分享触发的动作
-                },
-                success: function () {
-                    // 用户确认分享后执行的回调函数
-                    //alert(3)
-                },
-                cancel: function () {
-                    //alert(4)
-                    // 用户取消分享后执行的回调函数
-                }
-            });
-
-            //分享给扣扣空间
-            wx.onMenuShareQZone({
-                title: title, // 分享标题
-                desc: '全面体检，全面疾病筛查，专业医生量身定制套餐', // 分享描述
-                link: shareLink("1"), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: productPic, // 分享图标
-                type: 'link', // 分享类型,music、video或link，不填默认为link
-                trigger: function(){
-                    //点击分享触发的动作
-                },
-                success: function () {
-                    // 用户确认分享后执行的回调函数
-                    //alert(3)
-                },
-                cancel: function () {
-                    //alert(4)
-                    // 用户取消分享后执行的回调函数
-                }
-        });
-    });
-</script>-->
 </html>

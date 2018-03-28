@@ -26,13 +26,7 @@ public class RedisUtil {
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 
-<<<<<<< HEAD
 
-=======
-/*	@Autowired
-	private RwRedisTemplate<String,Object> rwRedisTemplate;*/
-	
->>>>>>> 8367702c63d16eb2e72771d4ebeafe4b1df24fa2
 	
 	/*********************************************** Object ************************************************/
 	

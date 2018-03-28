@@ -48,6 +48,7 @@
 				</bean>
 				<bean class="org.springframework.data.redis.connection.RedisClusterNode">
 					<constructor-arg name="host" value="127.0.0.1"></constructor-arg>
+
 					<constructor-arg name="port" value="7004"></constructor-arg>
 				</bean>-->
 			</set>
