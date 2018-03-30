@@ -8,6 +8,8 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.shiro.session.InvalidSessionException;
@@ -35,8 +37,8 @@ public class JedisShiroSessionRepository implements ShiroSessionRepository {
 	// }
 
 	private static final String KEY = "TW_SESSION";
-	
-	private RedisTemplate<String , Session> redisTemplate;
+
+	private RedisTemplate<String, Session> redisTemplate;
 
 	public RedisTemplate<String, Session> getRedisTemplate() {
 		return redisTemplate;
@@ -58,9 +60,10 @@ public class JedisShiroSessionRepository implements ShiroSessionRepository {
 
 			// redisUtil.setObject(new String(serializeKey, "UTF-8"), session,
 			// session.getTimeout());
-			//System.out.println(fmtSessionKey(session.getId()));
+			// System.out.println(fmtSessionKey(session.getId()));
 
-			//getRedisTemplate().opsForValue().set(session.getId().toString(), sessionToByte(session), session.getTimeout());
+			// getRedisTemplate().opsForValue().set(session.getId().toString(),
+			// sessionToByte(session), session.getTimeout());
 			redisTemplate.boundHashOps(KEY).put(session.getId().toString(), session);
 			redisTemplate.expire(KEY, session.getTimeout(), TimeUnit.MILLISECONDS);
 
@@ -77,21 +80,22 @@ public class JedisShiroSessionRepository implements ShiroSessionRepository {
 
 	@Override
 	public void delSession(Serializable sessionId) {
-//		if (SysUtil.isEmpty(sessionId))
-//			throw new NullPointerException("shiro sessionId is empty");
-//
-//		try {
-//			// getJedisManager().deleteByKey(DB_INDEX,
-//			// SerializeUtil.serialize(sessionId));
-//			// String key = new String(SerializeUtil.serialize(sessionId),
-//			// "UTF-8");
-//			// redisUtil.delObject(key);
-//			getRedisTemplate().opsForValue().getOperations().delete(fmtSessionKey(sessionId));
-//
-//		} catch (Exception e) {
-//			LogUtils.error(this.getClass(), "delSession error:" + sessionId);
-//			e.printStackTrace();
-//		}
+		if (SysUtil.isEmpty(sessionId))
+			throw new NullPointerException("shiro sessionId is empty");
+
+		try {
+			// getJedisManager().deleteByKey(DB_INDEX,
+			// SerializeUtil.serialize(sessionId));
+			// String key = new String(SerializeUtil.serialize(sessionId),
+			// "UTF-8");
+			// redisUtil.delObject(key);
+			// getRedisTemplate().opsForValue().getOperations().delete(fmtSessionKey(sessionId));
+			redisTemplate.boundHashOps(KEY).put(sessionId.toString(), null);
+
+		} catch (Exception e) {
+			LogUtils.error(this.getClass(), "delSession error:" + sessionId);
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -112,12 +116,14 @@ public class JedisShiroSessionRepository implements ShiroSessionRepository {
 			// session = (Session) redisUtil.getObject(key);
 			// String key = new String(SerializeUtil.serialize(sessionId),
 			// "UTF-8");
-			//System.out.println(fmtSessionKey(sessionId));
-			//byte[] bytes = (byte[]) getRedisTemplate().opsForValue().get(sessionId.toString());
-			
+			// System.out.println(fmtSessionKey(sessionId));
+			// byte[] bytes = (byte[])
+			// getRedisTemplate().opsForValue().get(sessionId.toString());
+
 			Object object = redisTemplate.boundHashOps(KEY).get(sessionId.toString());
-			
-			if(SysUtil.isEmpty(object)) return null;
+
+			if (SysUtil.isEmpty(object))
+				return null;
 
 			session = (Session) object;
 
@@ -132,13 +138,26 @@ public class JedisShiroSessionRepository implements ShiroSessionRepository {
 	public Collection<Session> getAllSessions() {
 		Collection<Session> collection = null;
 
-		// try {
-		// //collection = getJedisManager().getAllSession(DB_INDEX);
-		// collection = getRedisTemplate().
-		// } catch (Exception e) {
-		// LogUtils.error(this.getClass(), "getAllSessions error");
-		// e.printStackTrace();
-		// }
+		try {
+			
+			Set<Object> set = redisTemplate.boundHashOps(KEY).keys();
+			System.err.println(set);
+			System.out.println(set.size());
+			if(set.size() > 0){
+				for (Object object : set) {
+					String key = (String) object;
+					System.out.println(key);
+					Object session = redisTemplate.boundHashOps(KEY).get(key);
+					if(SysUtil.isEmpty(session)){
+						collection.add((Session) session);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			LogUtils.error(this.getClass(), "getAllSessions error");
+			e.printStackTrace();
+		}
 
 		return collection;
 	}

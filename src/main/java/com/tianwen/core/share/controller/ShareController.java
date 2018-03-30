@@ -1,10 +1,10 @@
 package com.tianwen.core.share.controller;
 
 
-import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import com.tianwen.base.util.Pager;
 import com.tianwen.base.util.PropsLoader;
-import com.tianwen.common.SysConstant;
+import com.tianwen.common.constant.SysConstant;
 import com.tianwen.common.redisutil.RedisComponetUtil;
 import com.tianwen.common.redisutil.RedisUtil;
 import com.tianwen.common.shiro.token.TokenManager;
@@ -14,27 +14,22 @@ import com.tianwen.core.share.entity.TRelationRecordEntity;
 import com.tianwen.core.share.service.ShareService;
 
 import com.tianwen.core.user.entity.TMember;
-import jxl.read.biff.SharedBooleanFormulaRecord;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.omg.CORBA.FloatHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
-import sun.net.www.http.HttpClient;
 
+import javax.management.monitor.Monitor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Holder;
-import java.net.URLEncoder;
 import java.util.*;
 
 @Controller
@@ -54,7 +49,11 @@ public class ShareController {
     private PropsLoader propsLoader;
 
     @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
     private RedisComponetUtil redisComponetUtil;
+
 
 
 
@@ -86,16 +85,16 @@ public class ShareController {
     public ModelAndView shareRecord(String mid) {
         ModelAndView modelAndView = new ModelAndView();
         HashMap<String, Object> param = new HashMap<>();
-        TMember tMember = TokenManager.getToken();
+       /* TMember tMember = TokenManager.getToken();
         param.put("mid", tMember.getMid());
-        param.put("openid", tMember.getOpenid());
-        //HashMap<String, Object> getEarnedMoney=shareService.getShareRecord(param);
+        param.put("openid", tMember.getOpenid());*/
+        modelAndView.setViewName("/share/shareRecord");
 
         return modelAndView;
     }
 
     /*获取商品信息*/
-    @RequestMapping(value = "getProductInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/getProductInfo", method = RequestMethod.GET)
     public ModelAndView getProductInfo(HttpServletRequest request,HttpServletResponse response) {
         ModelAndView modelAndView=new ModelAndView();
         Pager pager=new Pager();
@@ -157,7 +156,8 @@ public class ShareController {
         String mid=request.getParameter("mid");
         if(StringUtil.isBlank(mid))
             mid=String.valueOf(tMember.getMid());
-        String openid=tMember.getOpenid();
+        String openid=tMember!=null?tMember.getOpenid():null;
+        System.out.println("当前用户的openid");
         String pid=request.getParameter("pid");
         HashMap<String,Object> param=new HashMap<>();
         param.put("mid",mid);
@@ -223,6 +223,7 @@ public class ShareController {
                 relationRecordEntity.setMid(Integer.valueOf(mid));
             if(!StringUtil.isBlank(parentMid))
                 relationRecordEntity.setParentMid(Integer.valueOf(parentMid));
+            System.out.println("parentMid==="+relationRecordEntity.getParentMid());
             relationRecordEntity.setOpenid(openId);
             relationRecordEntity.setParentOpenid(parentOpenId);
             relationRecordEntity.setShareUrl(productUrl);
@@ -283,20 +284,22 @@ public class ShareController {
         return modelAndView;
     }
 
-    //测试集群
-    @RequestMapping("/testRedis")
-    public void testRedis(){
-       redisUtil.setString("zhangsan","123");
-      System.out.println(redisUtil.getString("zhangsan"));
-      System.out.println(redisComponetUtil.get("zhangsan"));
 
-    }
+        /*查看收益*/
+        @RequestMapping(value = "/checkMoney")
+    public ModelAndView checkMoney(){
+            ModelAndView modelAndView=new ModelAndView("/share/myMoney");
+              /*  TMember tember=TokenManager.getToken();
+                Integer mid=tember.getMid();
+                String openId=tember.getOpenid();
+                HashMap<String,Object> param=new HashMap<>();
+                param.put("mid",mid);
+                param.put("openid",openId);*/
 
-    @Test
-    public void test(){
-        redisUtil.setString("zhangsan","123");
-        System.out.println(redisUtil.getString("zhangsan"));
-        System.out.println(redisComponetUtil.get("zhangsan"));
-    }
+            return modelAndView;
+        }
+
+
+
 
 }

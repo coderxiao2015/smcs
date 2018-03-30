@@ -37,6 +37,9 @@ public interface ShareDao {
 
     public HashMap<String,Object> findMidByOpenId(TRelationRecordEntity relationRecordEntity);
 
+    public HashMap<String,Object> findMidByParentMid(TRelationRecordEntity relationRecordEntity);
+
+
     public int addMember(HashMap<String,Object> param);
 
     public void addRelationRecord(TRelationRecordEntity relationRecordEntity);
@@ -44,5 +47,8 @@ public interface ShareDao {
     public String getTrianglePids();
 
     public HashMap<String,Object> findProductByPid(HashMap<String,Object> param);
+
+
+    public HashMap<String,Object> findMyMoney(HashMap<String,Object> param);
 
 }

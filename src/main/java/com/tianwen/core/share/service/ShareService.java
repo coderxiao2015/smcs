@@ -21,7 +21,17 @@ public interface ShareService {
 
     public String getPids();
 
+    public int insterInfo(HashMap<String,Object> param);
+
     public HashMap<String,Object> findProductByPid(HashMap<String,Object> param);
+
+    public HashMap<String,Object> findMyMoney(HashMap<String,Object> param);
+
+    public HashMap<String,Object> findLastMoney(HashMap<String,Object> param);
+
+    public HashMap<String,Object> findAllMoney(HashMap<String,Object> param);
+
+    public HashMap<String,Object> findActiveMoney(HashMap<String,Object> param);
 
 
 }

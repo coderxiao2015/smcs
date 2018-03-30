@@ -18,6 +18,8 @@
 
 <a href="/share/testRedis">测试redis缓存</a>
 
+<a href="/share/insterInto">测试插入</a>
+
 
 <input type="button" value="记录佣金生成轨迹" onclick="testCom()">
 

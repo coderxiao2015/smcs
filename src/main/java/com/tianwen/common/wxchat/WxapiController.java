@@ -1,24 +1,15 @@
 package com.tianwen.common.wxchat;
 
-import com.tianwen.base.util.PropsLoader;
-import com.tianwen.common.SysConstant;
+import com.tianwen.common.constant.SysConstant;
 import com.tianwen.common.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.UUID;
 

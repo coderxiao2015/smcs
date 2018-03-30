@@ -16,6 +16,9 @@
 
 		<!-- 打印SQL语句到控制台 -->
 		<setting name="logImpl" value="STDOUT_LOGGING"/>
+		<!--插入null的时候不寻找类型-->
+		<setting name="jdbcTypeForNull" value="NULL" />
+
 	</settings>
 	
 	<typeAliases>

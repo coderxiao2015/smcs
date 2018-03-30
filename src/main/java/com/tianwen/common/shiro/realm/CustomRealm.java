@@ -15,7 +15,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.tianwen.common.SysConstant;
+import com.tianwen.common.constant.SysConstant;
 import com.tianwen.common.shiro.token.ShiroToken;
 import com.tianwen.common.util.SysUtil;
 import com.tianwen.core.user.entity.TMember;

@@ -2,23 +2,27 @@ package com.tianwen.common.redisutil;
 
 import com.tianwen.base.util.PropsLoader;
 import com.tianwen.common.util.StringUtil;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.SerializationException;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import org.springframework.util.Assert;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisException;
+import redis.clients.util.ClusterNodeInformation;
 import redis.clients.util.JedisClusterCRC16;
 
 import javax.annotation.PostConstruct;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import javax.annotation.Resource;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class RedisComponetUtil {
@@ -145,26 +149,11 @@ public void initClusterInfo(){
                            //被选中的jedis实例化
                            jedis = new Jedis(clusterNode.getHost(), clusterNode.getPort());
                            jedis.readonly();
-                         /*  ByteArrayOutputStream baos = new ByteArrayOutputStream(1204);
-                           ObjectOutputStream oos = new ObjectOutputStream(baos);
-                           oos.writeObject(keys);
-                           byte [] strData = baos.toByteArray();
-                           data = jedis.get(strData);
-                           System.out.println();
+                           byte[] kesby=keys.getBytes("UTF-8");
+                           data=jedis.get(kesby);
                            if(data!=null){
-                               //反序列化
-                               ByteArrayInputStream bio = new ByteArrayInputStream(strData);
-                               ObjectInputStream ois = new ObjectInputStream(bio);
-                               result=(String)ois.readObject();
-                                   System.out.println(result);
+                               result =(String)new JdkSerializationRedisSerializer().deserialize(data);
                            }
-                           */
-                          byte[] kesby=keys.getBytes("UTF-8");
-                         data=jedis.get(kesby);
-                         if(data!=null){
-                                 result =(String)new JdkSerializationRedisSerializer().deserialize(data);
-                                 System.out.println(result);
-                         }
                            break;
                        }
                    }
