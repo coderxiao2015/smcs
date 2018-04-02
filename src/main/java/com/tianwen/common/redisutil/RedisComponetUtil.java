@@ -33,10 +33,10 @@ public class RedisComponetUtil {
     private final Lock r = rwl.readLock();
     private final Lock w = rwl.writeLock();
 
-    private List<ClusterNode> masterNodes=new ArrayList<>();
-    private  List<ClusterNode> slaveNodes=new ArrayList<>();
+    private static List<ClusterNode> masterNodes=new ArrayList<>();
+    private static List<ClusterNode> slaveNodes=new ArrayList<>();
 
-    private HashMap<String,Object> slavePool=new HashMap<>();
+    private static  HashMap<String,Object> slavePool=new HashMap<>();
 
 
 
@@ -128,7 +128,19 @@ public void initClusterInfo(){
 
    }
 
-/*公共方法*/
+    public static List<ClusterNode> getMasterNodes() {
+        return masterNodes;
+    }
+
+    public static List<ClusterNode> getSlaveNodes() {
+        return slaveNodes;
+    }
+
+    public static HashMap<String, Object> getSlavePool() {
+        return slavePool;
+    }
+
+    /*公共方法*/
    public String  get(String keys){
        //通过被选中的jedis实例
        Jedis jedis = null;
