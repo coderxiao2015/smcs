@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 
-import com.tianwen.common.SysConstant;
+import com.tianwen.common.constant.SysConstant;
 public class FreeMarkerViewExtend extends FreeMarkerView {
 	
 	protected void exposeHelpers(Map<String, Object> model, HttpServletRequest request){

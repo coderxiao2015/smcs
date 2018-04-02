@@ -123,6 +123,11 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
+    public int insterInfo(HashMap<String,Object> param) {
+        return shareDao.addMember(param);
+    }
+
+    @Override
     public ProductEntity getProductByPid(HashMap<String, Object> param) {
         return null;
     }
@@ -142,8 +147,9 @@ public class ShareServiceImpl implements ShareService {
                 logger.info("查询用户是否是注册会员:" + memberMap);
                 int mid = 0;
                 if (memberMap == null || memberMap.isEmpty()) {
+                    System.out.println("parentMid=="+relationRecordEntity.getParentMid());
                     // 通过parentMid获取一级上线来作为这个Mid的二级上线
-                    HashMap<String, Object> parentMemberMap = shareDao.findMidByOpenId(relationRecordEntity);
+                    HashMap<String, Object> parentMemberMap = shareDao.findMidByParentMid(relationRecordEntity);
                     logger.info("通过parentMid去会员表查找parentMemberMap:" + parentMemberMap);
 
                     if (parentMemberMap == null || parentMemberMap.isEmpty())return;
@@ -155,12 +161,12 @@ public class ShareServiceImpl implements ShareService {
                     param.put("openid", relationRecordEntity.getOpenid());
                     param.put("levelone", relationRecordEntity.getParentMid());
                     param.put("leveltwo", parentMemberMap.get("LEVELONE"));
-                    param.put("type", relationRecordEntity.getType() + 4);
+                    param.put("type", 4);
                     param.put("unionid", relationRecordEntity.getUnionid());
 
-                    mid = shareDao.addMember(param);
-
-                    logger.info("新增会员 end, mid:" + mid);
+                    shareDao.addMember(param);
+                    mid=param.get("currMid")==null?0:Integer.valueOf(param.get("currentMid").toString());
+                    logger.info("新增会员 end, mid:" +param.get("currMid")+"====mid=="+param.get("mid") );
 
                     relationRecordEntity.setMid(mid);
 
@@ -175,5 +181,33 @@ public class ShareServiceImpl implements ShareService {
             }
         });
 
+    }
+
+    /*当前月收入*/
+    @Override
+    public HashMap<String, Object> findMyMoney(HashMap<String, Object> param) {
+
+         HashMap<String,Object> result=new HashMap<>();
+        result.put("currentMoney",shareDao.findMyMoney(param).get("COMMISSION")); //当前收入
+
+        return null;
+    }
+
+    /*上月收入*/
+    @Override
+    public HashMap<String, Object> findLastMoney(HashMap<String, Object> param) {
+        return null;
+    }
+
+    /*所有收入*/
+    @Override
+    public HashMap<String, Object> findAllMoney(HashMap<String, Object> param) {
+        return null;
+    }
+
+    /*可提现金额*/
+    @Override
+    public HashMap<String, Object> findActiveMoney(HashMap<String, Object> param) {
+        return null;
     }
 }

@@ -1,0 +1,100 @@
+@charset "utf-8";
+body {
+	background: #f7f9fa;
+}
+
+.product {
+	background: #fff;
+	padding-left: 0.228rem;
+}
+
+.profrom {
+	height: 0.759rem;
+	line-height: 0.759rem;
+	border-bottom: 1px solid #ededed;
+	color: #333;
+	font-size: 0.265rem;
+}
+
+.serpro ul li {
+	border-bottom: 1px solid #ededed;
+	padding: 0.28rem 0;
+	position: relative;
+}
+
+.serpro ul li img {
+	float: left;
+	width: 2.27rem;
+}
+
+.serpro ul li .name {
+	padding-left: 2.5rem;
+	color: #333;
+	font-size: 0.265rem;
+	margin-bottom: 0.08rem;
+}
+
+.serpro ul li .money {
+	padding-left: 2.45rem;
+	color: #333;
+	font-size: 0.3rem;
+	margin-bottom: 0.08rem;
+}
+
+.serpro ul li .smo {
+	padding-left: 2.5rem;
+	color: #ff5252;
+	font-size: 0.228rem;
+}
+
+.tcnav {
+	background: #fff;
+	height: 0.759rem;
+	line-height: 0.759rem;
+	margin-bottom: 0.18rem;
+}
+
+.tcnav ul li {
+	float: left;
+	width: 33.3%;
+	text-align: center;
+	color: #666;
+	font-size: 0.265rem;
+	height: 0.379rem;
+	line-height: 0.379rem;
+	border-right: 1px solid #ededed;
+	margin-top: 0.18rem;
+}
+
+.tcnav ul li:last-child {
+	border-right: 0;
+}
+
+.tcnav ul li.click {
+	color: #3bb9ff;
+}
+
+.tcnav ul li i {
+	color: #ff5252;
+	margin-right: 0.3rem;
+}
+
+.btn-block {
+	height: 0.93rem;
+	line-height: 0.93rem;
+	padding: 0;
+	background: #3bb9ff;
+	color: #fff;
+	font-size: 0.3rem;
+	border-radius: 0;
+	position: fixed;
+	bottom: 0;
+	z-index: 9;
+	width: 100%;
+	max-width: 640px;
+}
+
+.btn-block img {
+	width: 0.32rem;
+	margin-right: 0.095rem;
+}

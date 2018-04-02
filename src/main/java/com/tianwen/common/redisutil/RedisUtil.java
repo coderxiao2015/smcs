@@ -1,15 +1,16 @@
 package com.tianwen.common.redisutil;
 
-import com.tianwen.common.util.SerializeUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.tianwen.common.util.SerializeUtil;
 
 /*
  * 
@@ -25,8 +26,38 @@ public class RedisUtil {
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
-
-
+	/*@PostConstruct
+	public void init() {
+		 Map <String,Jedis>map=new HashMap<String,Jedis>();
+		 Jedis snode1  = new Jedis("192.168.1.168",6379);	
+		 Jedis snode2  = new Jedis("192.168.1.168",7003);
+		 Jedis snode3  = new Jedis("192.168.1.168",7004);
+		 snode1.readonly();
+		 snode2.readonly();
+		 snode3.readonly();
+		 
+		 map.put("node1", snode1);
+		 map.put("node2", snode2);
+		 map.put("node3", snode3);
+		 Jedis redis=null;
+		
+			int i=1;
+			while(true){
+				try {
+					 redis=	map.get("node"+i);
+					 String result = redis.get("name");//从机读    
+					 System.out.println("----"+result);
+					 break;
+				} catch (Exception e) {
+					redis.close();
+					 i++;
+					 System.out.println("--异常-------"+i);
+					e.printStackTrace();
+				}
+				 
+			}
+     
+   */
 	
 	/*********************************************** Object ************************************************/
 	
@@ -78,7 +109,7 @@ public class RedisUtil {
 	 * @param key
 	 * @param value
 	 */
-	public void 	setString(String key, String value){
+	public void setString(String key, String value){
 		if(StringUtils.isBlank(key) || StringUtils.isBlank(value)) throw new NullPointerException("redis set key or value is null");
 		redisTemplate.opsForValue().set(key, value);
 	}
@@ -100,7 +131,6 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-
 	public String getString(String key){
 		if(StringUtils.isBlank(key)) throw new NullPointerException("redis get key is null");
 		return (String) redisTemplate.opsForValue().get(key);

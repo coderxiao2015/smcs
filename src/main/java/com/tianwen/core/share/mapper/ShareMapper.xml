@@ -134,15 +134,21 @@
 			<if test="mid!=null">
 				or mid=#{mid}
 			</if>
-			<if test="parentMid!=null and openid==null and mid==null">
-			and mid=#{parentMid}
-			</if>
 		AND ROWNUM = 1
 	</select>
 
-	<insert id="addMember" parameterType="java.util.HashMap">
-		<selectKey resultType="int" keyProperty="mid">
-			SELECT SEQ_BASE.NEXTVAL AS mid FROM DUAL
+
+	<select id="findMidByParentMid" parameterType="relationRecord" resultType="java.util.HashMap">
+		SELECT mid, levelone, leveltwo FROM t_member WHERE 1=1
+		<if test="parentMid!=null">
+			and mid=#{parentMid}
+		</if>
+		AND ROWNUM = 1
+	</select>
+
+	<insert id="addMember"  parameterType="java.util.HashMap">
+		<selectKey keyProperty="currMid" resultType="int" order="BEFORE">
+			select SEQ_BASE.NEXTVAL AS currMid from dual
 		</selectKey>
 		INSERT INTO t_member
 		(
@@ -158,7 +164,7 @@
 		unionid
 		) VALUES
 		(
-		#{mid},
+		#{currMid},
 		#{openid},
 		#{levelone},
 		1,
@@ -214,6 +220,35 @@
 	</if>
 	</select>
 
+
+	<!--本月当前收入 保护期佣金和-->
+	<select id="curMonthMoney" parameterType="java.util.HashMap">
+		select sum(tcr.commission) as commission
+		from t_commission_record tcr
+		where 1 = 1
+		and tcr.is_take <![CDATA[<>]]>  '3'
+		and to_date(tcr.commission_date, 'yyyy-mm-dd HH24:Mi:ss') >
+		to_date(to_char(sysdate, 'yyyy/mm') || '/01',
+		'yyyy-mm-dd HH24:Mi:ss')
+		<if test="mid!=null">
+			and (tcr.parentmid = #{mid})
+		</if>
+	</select>
+
+
+	<!--上月收入 保护期佣金和-->
+	<select id="lastMonthMoney" parameterType="java.util.HashMap">
+		select sum(tcr.commission) as commission
+		from t_commission_record tcr
+		where 1 = 1
+		and tcr.is_take <![CDATA[<>]]>  '3'
+		and to_date(tcr.commission_date, 'yyyy-mm-dd HH24:Mi:ss') >
+		to_date(to_char(add_months(sysdate,-1), 'yyyy/mm') || '/01',
+		'yyyy-mm-dd HH24:Mi:ss')
+		<if test="mid!=null">
+			and (tcr.parentmid = #{mid})
+		</if>
+	</select>
 
 
 	

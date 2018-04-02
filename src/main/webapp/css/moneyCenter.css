@@ -1,0 +1,130 @@
+@charset "utf-8";
+body {
+	background: #f7f9fa;
+}
+
+.top {
+	background: #3bb9ff;
+	color: #fff;
+	height: 2.446rem;
+	padding: 0.379rem 0 0.4rem 0.228rem;
+}
+
+.top .toptit {
+	font-size: 0.228rem;
+	margin-bottom: 0.3rem;
+}
+
+.top .topmoney {
+	font-size: 0.957rem;
+}
+
+.money {
+	background: #fff;
+	margin-bottom: 0.18rem;
+	padding-top: 0.379rem;
+	padding-left: 0.228rem;
+}
+
+.money .mont {
+	color: #333;
+	font-size: 0.265rem;
+	margin-bottom: 0.379rem;
+}
+
+.money .mmoo {
+	border-bottom: 1px solid #ededed;
+	padding-bottom: 0.379rem;
+	margin-bottom: 0.379rem;
+}
+
+.money .mmoo .mola {
+	float: left;
+	border-right: 1px solid #ededed;
+	width: 49%;
+}
+
+.money .mmoo .mola .molo {
+	color: #3bb9ff;
+	font-size: 0.341rem;
+	margin-bottom: 0.1rem;
+	width: 70%;
+	float: left;
+}
+
+.money .mmoo .mola .molt {
+	color: #999;
+	font-size: 0.228rem;
+	width: 70%;
+	float: left;
+}
+
+.money .mmoo .mola img {
+	width: 0.151rem;
+	float: right;
+	margin-top: 0.3rem;
+	margin-right: 0.28rem;
+}
+
+.money .mmoo .mmor {
+	float: left;
+	width: 49%;
+}
+
+.money .mmoo .mmor .mmoe {
+	color: #3bb9ff;
+	font-size: 0.341rem;
+	margin-bottom: 0.1rem;
+	padding-left: 0.32rem;
+}
+
+.money .mmoo .mmor .mrew {
+	color: #999;
+	font-size: 0.228rem;
+	padding-left: 0.32rem;
+}
+
+.almo {
+	padding-bottom: 0.379rem;
+	position: relative;
+}
+
+.almo .mont {
+	margin-bottom: 0.28rem;
+}
+
+.almo .almoney {
+	color: #3bb9ff;
+	font-size: 0.341rem;
+}
+
+.almo span {
+	width: 0.957rem;
+	height: 0.474rem;
+	line-height: 0.474rem;
+	border: 1px solid #3bb9ff;
+	color: #3bb9ff;
+	text-align: center;
+	border-radius: 4px;
+	font-size: 0.265rem;
+	position: absolute;
+	right: 0.228rem;
+	bottom: 0.531rem;
+	z-index: 9;
+}
+
+.sharelist {
+	height: 0.85rem;
+	line-height: 0.85rem;
+	background: #fff;
+	padding-left: 0.228rem;
+	padding-right: 0.228rem;
+	color: #424242;
+	font-size: 0.265rem;
+}
+
+.sharelist img {
+	float: right;
+	width: 0.151rem;
+	margin-top: 0.28rem;
+}
