@@ -1,41 +1,33 @@
 package com.tianwen.core.share.controller;
 
 
-import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
 import com.tianwen.base.util.Pager;
 import com.tianwen.base.util.PropsLoader;
 import com.tianwen.common.SysConstant;
 import com.tianwen.common.redisutil.RedisComponetUtil;
+import com.tianwen.common.redisutil.RedisOperationsImpl;
 import com.tianwen.common.redisutil.RedisUtil;
 import com.tianwen.common.shiro.token.TokenManager;
-import com.tianwen.common.util.*;
+import com.tianwen.common.util.AESUtil;
+import com.tianwen.common.util.CookieUtil;
+import com.tianwen.common.util.StringUtil;
+import com.tianwen.common.util.SysUtils;
 import com.tianwen.core.share.entity.ProductEntity;
 import com.tianwen.core.share.entity.TRelationRecordEntity;
 import com.tianwen.core.share.service.ShareService;
-
 import com.tianwen.core.user.entity.TMember;
-import jxl.read.biff.SharedBooleanFormulaRecord;
-
-import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
-import org.junit.Test;
-import org.omg.CORBA.FloatHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import sun.net.www.http.HttpClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Holder;
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @Controller
 @Scope(value = "prototype")
@@ -54,7 +46,9 @@ public class ShareController {
     private PropsLoader propsLoader;
 
     @Autowired
-    private RedisComponetUtil redisComponetUtil;
+    private RedisOperationsImpl redisOperations;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
 
@@ -286,17 +280,17 @@ public class ShareController {
     //测试集群
     @RequestMapping("/testRedis")
     public void testRedis(){
-       redisUtil.setString("zhangsan","123");
-      System.out.println(redisUtil.getString("zhangsan"));
-      System.out.println(redisComponetUtil.get("zhangsan"));
+        redisTemplate.opsForList().leftPush("name","a1");
+        redisTemplate.opsForList().leftPush("name","a2");
+        redisTemplate.opsForList().leftPush("name","a3");
+        redisTemplate.opsForList().leftPush("name","a4");
+        System.out.println(redisTemplate.opsForList().range("name",0,3));
+
+        System.out.println(redisOperations.range("name",0,3));
+
+
 
     }
 
-    @Test
-    public void test(){
-        redisUtil.setString("zhangsan","123");
-        System.out.println(redisUtil.getString("zhangsan"));
-        System.out.println(redisComponetUtil.get("zhangsan"));
-    }
 
 }
